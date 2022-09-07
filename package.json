@@ -13,8 +13,7 @@
   },
   "lint-staged": {
     "src/**/*.ts": [
-      "npx pretty-quick --staged",
-      "npx eslint --fix src --ext .js"
+      "npx pretty-quick --staged"
     ]
   },
   "repository": {
