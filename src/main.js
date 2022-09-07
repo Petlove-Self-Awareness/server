@@ -1,13 +1,9 @@
-console.log(1);
-console.log('skjdhfpsdfnasiduf');
+console.log(1)
+console.log('skjdhfpsdfnasiduf')
+const comma = []
+const bahiano = 'sdhfgasdlfh'
 
-if (
-  1093901
-  && 'ksdhfisdf'
-  && 'kjsdfiksdh'
-  && 7
-  && false
-  && true
-  && 'calabresa' === 12
-) {
+if (comma === bahiano) {
+  const trade = 'sjudfhs'
+  console.log(trade)
 }
