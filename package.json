@@ -4,7 +4,7 @@
   "description": "petlove backend",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prettier": "npx prettier --write --ignore-unknown"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/Petlove-Self-Awareness/server#readme",
   "devDependencies": {
-    "prettier": "^2.7.1"
+    "prettier": "npm:@btmills/prettier@^2.7.1"
   }
 }

@@ -1,4 +1,13 @@
 console.log(1);
-console.log("skjdhfpsdfnasiduf");
+console.log('skjdhfpsdfnasiduf');
 
-let a = 1837189;
+if (
+  1093901
+  && 'ksdhfisdf'
+  && 'kjsdfiksdh'
+  && 7
+  && false
+  && true
+  && 'calabresa' === 12
+) {
+}
