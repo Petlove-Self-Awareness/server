@@ -1,14 +1,15 @@
-console.log(12)
+import { User } from './domain/models/user'
+import { BcryptAdapter } from './infra/criptography/bcrypt-adapter'
 
-console.log(1)
+const user = User.create({
+  id: '2',
+  email: 'aaa@aaa.com',
+  name: 'daniel',
+  password: '123'
+})
 
-console.log('skjdhfpsdfnasiduf')
+let name = user.userName
+console.log(name)
 
-const comma = []
-const bahiano = ['sdhfgasdlfh']
-
-if (comma === bahiano) {
-  const trade = 'sjudfhs'
-
-  console.log(trade)
-}
+const bcryptAdapter = new BcryptAdapter(12)
+bcryptAdapter.encrypt(name).then(res => console.log(res))
