@@ -1,4 +1,4 @@
-import { IUserDataProps } from '../../domain/models/user'
+import { User } from '../../domain/models/user'
 import { ISingupUseCase, SignupData } from '../../domain/usecases/signup'
 import { IEncrypter } from '../protocols/encrypter'
 import { IDBuilder } from '../protocols/id-builder'
@@ -19,15 +19,15 @@ export class DbSingup implements ISingupUseCase {
     this.userRepository = userRepository
   }
 
-  async add(signupData: SignupData): Promise<IUserDataProps> {
-    const { password } = signupData
+  async add(signupData: SignupData): Promise<void> {
+    const { password, email, name } = signupData
     const id = this.idBuilder.createId()
+    User.create({ id, email, name, password })
     const hashedPassword = await this.encrypter.encrypt(password)
-    const createdUser = await this.userRepository.add({
+    return this.userRepository.signUp({
       ...signupData,
       password: hashedPassword,
       id
     })
-    return createdUser
   }
 }

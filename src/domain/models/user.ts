@@ -11,15 +11,15 @@ export class User {
   private email: string
   private password: string
 
-  private constructor(props: IUserDataProps, id?: string) {
+  private constructor(props: IUserDataProps) {
     this.id = props.id
     this.email = props.email
     this.name = props.name
     this.password = props.password
   }
 
-  public static create(props: IUserDataProps, id?: string): User {
-    return new User(props, id)
+  public static create(props: IUserDataProps): User {
+    return new User(props)
   }
 
   get userName(): string {
