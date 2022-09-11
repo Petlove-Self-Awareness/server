@@ -38,6 +38,7 @@ export class SignupController implements IController {
       await this.signup.add({ email, name, password })
       return created()
     } catch (error) {
+      console.error(error)
       return serverError(error)
     }
   }
