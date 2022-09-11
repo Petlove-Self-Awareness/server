@@ -5,5 +5,5 @@ export interface SignupData {
 }
 
 export interface ISingupUseCase {
-  add: (signupData: SignupData) => void
+  add: (signupData: SignupData) => Promise<void>
 }
