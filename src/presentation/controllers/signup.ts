@@ -1,18 +1,16 @@
-import { MissingParamError } from '../errors/missing-param-error'
+import { ISingupUseCase } from '../../domain/usecases/signup'
 import { InvalidParamError } from '../errors/invalid-param-error'
-import { badRequest, created, ok, serverError } from '../helpers/http-helpers'
+import { MissingParamError } from '../errors/missing-param-error'
+import { badRequest, created, serverError } from '../helpers/http-helpers'
 import { IController } from '../protocols/controller'
 import { IEmailValidator } from '../protocols/email-validator'
 import { HttpRequest, HttpResponse } from '../protocols/http'
-import { ISingupUseCase } from '../../domain/usecases/signup'
 
 export class SignupController implements IController {
-  private readonly emailValidator: IEmailValidator
-  private readonly signup: ISingupUseCase
-  constructor(emailValidator: IEmailValidator, singup: ISingupUseCase) {
-    this.emailValidator = emailValidator
-    this.signup = singup
-  }
+  constructor(
+    private readonly emailValidator: IEmailValidator,
+    private readonly singUpUseCase: ISingupUseCase
+  ) {}
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const requiredFields = [
@@ -35,7 +33,7 @@ export class SignupController implements IController {
         return badRequest(new InvalidParamError('email'))
       }
 
-      await this.signup.add({ email, name, password })
+      await this.singUpUseCase.signUp({ email, name, password })
       return created()
     } catch (error) {
       console.error(error)

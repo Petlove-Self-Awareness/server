@@ -1,18 +1,18 @@
-import { PrismaClient } from '@prisma/client'
-import { IDBuilder } from '../../../data/protocols/id-builder'
-import { IUserRepo } from '../../../data/protocols/user-repository'
-import { IUserDataProps, User } from '../../../domain/models/user'
+import { Prisma, PrismaClient, user } from '@prisma/client'
+import { IUUIDValidator } from '../../../data/protocols/criptography/id-validator'
+import { IDbFindUser } from '../../../data/protocols/db/user/find-user-repository'
+import { IDbSignup } from '../../../data/protocols/db/user/signup-repository'
+import { Result } from '../../../domain/logic/result'
+import { IUserModel, User } from '../../../domain/models/user'
+import { SignupData } from '../../../domain/usecases/signup'
 
-export class UserPostgresRepository implements IUserRepo {
-  private readonly prisma: PrismaClient
-  private readonly idAdapter: IDBuilder
-  constructor(prismaClient: PrismaClient, idAdapter: IDBuilder) {
-    this.prisma = prismaClient
-    this.idAdapter = idAdapter
-  }
-
-  async findUserByEmailOrId(value: string): Promise<User> {
-    let register
+export class UserPostgresRepository implements IDbSignup, IDbFindUser {
+  constructor(
+    private readonly prisma: PrismaClient,
+    private readonly idAdapter: IUUIDValidator
+  ) {}
+  async findUserByEmailOrId(value: string): Promise<Result<User>> {
+    let register: user
     const isUUID = this.idAdapter.isUUID(value)
     if (isUUID) {
       register = await this.prisma.user.findUnique({
@@ -24,9 +24,9 @@ export class UserPostgresRepository implements IUserRepo {
       })
     }
     if (!register) {
-      throw new Error('User does not exist')
+      return Result.fail('User was not found')
     }
-    return User.create(
+    const userOrError = User.create(
       {
         email: register.email,
         name: register.name,
@@ -34,13 +34,14 @@ export class UserPostgresRepository implements IUserRepo {
       },
       register.id
     )
+
+    if (userOrError.isFailure) {
+    }
   }
 
-  async signUp(userData: IUserDataProps): Promise<void> {
-    const { email, id, name, password } = userData
-    await this.findUserByEmailOrId(email)
+  async signup(userData: IUserModel): Promise<void> {
     await this.prisma.user.create({
-      data: { id, email, name, password }
+      data: { ...userData, name: userData.name.value }
     })
   }
 }
