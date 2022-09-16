@@ -1,9 +1,14 @@
-import { HttpResponse } from '../protocols/http'
 import { ServerError } from '../errors/server-error'
+import { HttpResponse } from '../protocols/http'
 
 export const badRequest = (error: Error): HttpResponse => ({
   statusCode: 400,
   body: error
+})
+
+export const unprocessableEntity = (error: string): HttpResponse => ({
+  statusCode: 422,
+  body: { error }
 })
 
 export const ok = (data: any): HttpResponse => ({
@@ -11,9 +16,9 @@ export const ok = (data: any): HttpResponse => ({
   body: data
 })
 
-export const created = (): HttpResponse => ({
+export const created = (data: any): HttpResponse => ({
   statusCode: 201,
-  body: {}
+  body: data
 })
 
 export const serverError = (error: Error): HttpResponse => ({

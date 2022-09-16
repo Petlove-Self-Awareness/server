@@ -5,7 +5,7 @@ import { BcryptAdapter } from '../../infra/criptography/bcrypt-adapter'
 import { UUIDAdapter } from '../../utils/uuid-adapter'
 import { UserPostgresRepository } from '../../infra/db/postgres/user-repository'
 import { PrismaClient } from '@prisma/client'
-import { SignupController } from '../../presentation/controllers/signup'
+import { SignupController } from '../../presentation/controllers/signup-controller'
 
 export const makeSignupController = (): IController => {
   const emailValidator = new EmailValidatorAdapter()
