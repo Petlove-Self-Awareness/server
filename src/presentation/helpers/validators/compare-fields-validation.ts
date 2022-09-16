@@ -7,7 +7,7 @@ export class CompareFieldsValidation implements IValidation {
     private readonly fieldToCompare: string
   ) {}
   validate(input: any): Error | null {
-    if (this.field !== this.fieldToCompare) {
+    if (input[this.field] !== input[this.fieldToCompare]) {
       return new InvalidParamError(this.fieldToCompare)
     }
     return null
