@@ -1,38 +1,22 @@
 import { ISingupUseCase } from '../../domain/usecases/signup'
-import { InvalidParamError } from '../errors/invalid-param-error'
-import { MissingParamError } from '../errors/missing-param-error'
 import { badRequest, created, serverError } from '../helpers/http-helpers'
 import { IController } from '../protocols/controller'
-import { IEmailValidator } from '../protocols/email-validator'
 import { HttpRequest, HttpResponse } from '../protocols/http'
+import { IValidation } from '../protocols/validation'
 
 export class SignupController implements IController {
   constructor(
-    private readonly emailValidator: IEmailValidator,
-    private readonly singUpUseCase: ISingupUseCase
+    private readonly singUpUseCase: ISingupUseCase,
+    private readonly validation: IValidation
   ) {}
+
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const requiredFields = [
-        'name',
-        'email',
-        'password',
-        'passwordConfirmation'
-      ]
-      for (const field of requiredFields) {
-        if (!httpRequest.body[field]) {
-          return badRequest(new MissingParamError(field))
-        }
+      const error = this.validation.validate(httpRequest.body)
+      if (error) {
+        return badRequest(error)
       }
-      const { name, email, password, passwordConfirmation } = httpRequest.body
-      if (password !== passwordConfirmation) {
-        return badRequest(new InvalidParamError('passwordConfirmation'))
-      }
-      const isValidEmail = this.emailValidator.isValid(email)
-      if (!isValidEmail) {
-        return badRequest(new InvalidParamError('email'))
-      }
-
+      const { name, email, password } = httpRequest.body
       await this.singUpUseCase.signUp({ email, name, password })
       return created()
     } catch (error) {
