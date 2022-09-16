@@ -14,7 +14,7 @@
     "test:unit": "npm test -- --watch -c jest-unit-config.js",
     "test:integration": "npm test -- --watch -c jest-integration-config.js",
     "test:ci": "npm test -- --coverage",
-    "test:staged": "npm test -- --findRelatedTests ./src"
+    "test:staged": "npm test -- --findRelatedTests"
   },
   "husky": {
     "hooks": {
