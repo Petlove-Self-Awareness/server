@@ -13,7 +13,8 @@
     "test:verbose": "jest --passWithNoTests --watch",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",
     "test:integration": "npm test -- --watch -c jest-integration-config.js",
-    "test:ci": "npm test -- --coverage"
+    "test:ci": "npm test -- --coverage",
+    "test:staged": "npm test -- --findRelatedTests ./src"
   },
   "husky": {
     "hooks": {
