@@ -1,3 +1,6 @@
+import { Result } from '../logic/result'
+import { User } from '../models/user'
+
 export interface SignupData {
   name: string
   email: string
@@ -5,5 +8,5 @@ export interface SignupData {
 }
 
 export interface ISingupUseCase {
-  add: (signupData: SignupData) => Promise<void>
+  signUp: (signupData: SignupData) => Promise<Result<User>>
 }
