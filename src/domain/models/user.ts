@@ -2,7 +2,7 @@ import { Result } from '../logic/result'
 import { SignupData } from '../usecases/signup'
 import { UserName } from '../value-objects/user-name'
 
-export interface IUserModel {
+export interface UserCreationProps {
   id: string
   name: UserName
   email: string
@@ -15,7 +15,7 @@ export class User {
   private email: string
   private password: string
 
-  private constructor(props: IUserModel) {
+  private constructor(props: UserCreationProps) {
     this.id = props.id
     this.email = props.email
     this.name = props.name

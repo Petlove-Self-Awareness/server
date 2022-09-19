@@ -1,6 +1,7 @@
 import { Result } from '../../../../domain/logic/result'
 import { User } from '../../../../domain/models/user'
+import { IUserModel } from '../../../usecases/signup/db-signup-protocols'
 
-export interface IDbFindUser {
-  findUserByEmailOrId: (value: string) => Promise<Result<User>>
+export interface ILoadUserByEmailOrIdRepository {
+  loadUserByEmailOrId: (value: string) => Promise<Result<IUserModel>>
 }

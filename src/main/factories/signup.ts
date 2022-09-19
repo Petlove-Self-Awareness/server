@@ -1,6 +1,6 @@
 import { IController } from '../../presentation/protocols/controller'
 import { EmailValidatorAdapter } from '../../utils/email-validator-adapter'
-import { DbSingup } from '../../data/usecases/signup/db-signup-protocol'
+import { DbSignUp } from '../../data/usecases/signup/db-signup'
 import { BcryptAdapter } from '../../infra/criptography/bcrypt-adapter'
 import { UUIDAdapter } from '../../utils/uuid-adapter'
 import { UserPostgresRepository } from '../../infra/db/postgres/user-repository'
@@ -15,7 +15,7 @@ export const makeSignupController = (): IController => {
   const uuidBuilder = new UUIDAdapter()
   const prismaClient = new PrismaClient()
   const userPostgresRepo = new UserPostgresRepository(prismaClient)
-  const signup = new DbSingup(bcryptAdapter, uuidBuilder, userPostgresRepo)
+  const signup = new DbSignUp(bcryptAdapter, uuidBuilder, userPostgresRepo)
 
   return new SignupController(emailValidator, signup)
 }

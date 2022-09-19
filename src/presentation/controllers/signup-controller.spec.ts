@@ -1,5 +1,5 @@
 import { Result } from '../../domain/logic/result'
-import { User } from '../../domain/models/user'
+import { IUserModel } from '../../domain/models/user-model'
 import { ISingupUseCase, SignupData } from '../../domain/usecases/signup'
 import { ServerError } from '../errors/server-error'
 import {
@@ -20,15 +20,13 @@ const makeFakeRequest = (): HttpRequest => ({
   }
 })
 
-const makeFakeUser = (): Result<User> => {
-  return User.create(
-    {
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'any_password'
-    },
-    'valid_id'
-  )
+const makeFakeUser = (): Result<IUserModel> => {
+  return Result.ok({
+    id: 'any_id',
+    name: 'any_name',
+    email: 'any_email@mail.com',
+    password: 'any_password'
+  })
 }
 
 const makeValidationStub = (): IValidation => {
@@ -42,7 +40,7 @@ const makeValidationStub = (): IValidation => {
 
 const makeSignUpUseCaseStub = (): ISingupUseCase => {
   class SignUpUseCaseStub implements ISingupUseCase {
-    signUp(signupData: SignupData): Promise<Result<User>> {
+    signUp(signupData: SignupData): Promise<Result<IUserModel>> {
       return new Promise(resolve => resolve(makeFakeUser()))
     }
   }

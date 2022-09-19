@@ -1,5 +1,5 @@
-import { IUserModel } from '../../../../domain/models/user'
+import { IUserModel } from '../../../usecases/signup/db-signup-protocols'
 
-export interface IDbSignup {
+export interface ISignupRepository {
   signup: (data: IUserModel) => Promise<void>
 }
