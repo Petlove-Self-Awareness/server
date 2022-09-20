@@ -1,4 +1,5 @@
 import { Result } from '../../../domain/logic/result'
+import { User } from '../../../domain/models/user'
 import {
   IDBuilder,
   IHasher,
@@ -26,6 +27,10 @@ export class DbSignUp implements ISingupUseCase {
     }
     const hashedPassword = await this.hasher.hash(password)
     const id = this.idBuilder.createId()
+    const validUser = User.create({ name, email, password }, id)
+    if (validUser.isFailure) {
+      return Result.fail<IUserModel>(validUser.error)
+    }
     await this.signupRepository.signup({
       email,
       name,
