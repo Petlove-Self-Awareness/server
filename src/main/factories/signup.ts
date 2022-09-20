@@ -3,7 +3,7 @@ import { EmailValidatorAdapter } from '../../utils/email-validator-adapter'
 import { DbSignUp } from '../../data/usecases/signup/db-signup'
 import { BcryptAdapter } from '../../infra/criptography/bcrypt-adapter'
 import { UUIDAdapter } from '../../utils/uuid-adapter'
-import { UserPostgresRepository } from '../../infra/db/postgres/user-repository'
+import { UserPostgresRepository } from '../../infra/db/postgres/user-postgres-repository'
 import { PrismaClient } from '@prisma/client'
 import { SignupController } from '../../presentation/controllers/signup-controller'
 

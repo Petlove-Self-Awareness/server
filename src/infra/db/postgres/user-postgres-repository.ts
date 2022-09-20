@@ -1,19 +1,23 @@
-import { Prisma, PrismaClient, user } from '@prisma/client'
+import { PrismaClient, user } from '@prisma/client'
 import { IUUIDValidator } from '../../../data/protocols/criptography/id-validator'
 import { ILoadUserByEmailOrIdRepository } from '../../../data/protocols/db/user/find-user-repository'
 import { ISignupRepository } from '../../../data/protocols/db/user/signup-repository'
 import { Result } from '../../../domain/logic/result'
-import { UserCreationProps, User } from '../../../domain/models/user'
-import { SignupData } from '../../../domain/usecases/signup'
+import { IUserModel } from '../../../domain/models/user-model'
 
 export class UserPostgresRepository
   implements ISignupRepository, ILoadUserByEmailOrIdRepository
 {
-  constructor(
-    private readonly prisma: PrismaClient,
-    private readonly idAdapter: IUUIDValidator
-  ) {}
-  async loadUserByEmailOrId(value: string): Promise<Result<User>> {
+  private readonly prisma: PrismaClient
+  constructor(private readonly idAdapter: IUUIDValidator) {}
+
+  async signup(data: IUserModel): Promise<void> {
+    await this.prisma.user.create({
+      data
+    })
+  }
+
+  async loadUserByEmailOrId(value: string): Promise<Result<IUserModel>> {
     let register: user
     const isUUID = this.idAdapter.isUUID(value)
     if (isUUID) {
@@ -28,22 +32,6 @@ export class UserPostgresRepository
     if (!register) {
       return Result.fail('User was not found')
     }
-    const userOrError = User.create(
-      {
-        email: register.email,
-        name: register.name,
-        password: register.password
-      },
-      register.id
-    )
-
-    if (userOrError.isFailure) {
-    }
-  }
-
-  async signup(userData: UserCreationProps): Promise<void> {
-    await this.prisma.user.create({
-      data: { ...userData, name: userData.name.value }
-    })
+    return Result.ok<IUserModel>(register)
   }
 }
