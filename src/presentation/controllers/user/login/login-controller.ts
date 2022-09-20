@@ -22,10 +22,14 @@ export class LoginController implements IController {
         return badRequest(error)
       }
       const { email, password } = httpRequest.body
-      const accessToken = await this.loginUseCase.auth({ email, password })
-      if (!accessToken) {
+      const accessTokenResult = await this.loginUseCase.auth({
+        email,
+        password
+      })
+      if (accessTokenResult.isFailure) {
         return unauthorized()
       }
+      const accessToken = accessTokenResult.getValue()
       return ok({ accessToken })
     } catch (error) {
       return serverError(error)

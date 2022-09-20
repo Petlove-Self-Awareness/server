@@ -8,7 +8,8 @@ import {
   serverError,
   ok,
   MissingParamError,
-  ServerError
+  ServerError,
+  Result
 } from './login-controller-protocols'
 
 type ISutTypes = {
@@ -28,8 +29,8 @@ const makeValidation = (): IValidation => {
 
 const makeLoginStub = (): ILogin => {
   class LoginUseCaseStub implements ILogin {
-    async auth(authentication: AuthenticationModel): Promise<string> {
-      return new Promise(resolve => resolve('any_token'))
+    async auth(authentication: AuthenticationModel): Promise<Result<string>> {
+      return new Promise(resolve => resolve(Result.ok('any_token')))
     }
   }
   return new LoginUseCaseStub()
