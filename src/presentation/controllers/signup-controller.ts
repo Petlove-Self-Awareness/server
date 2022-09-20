@@ -32,7 +32,6 @@ export class SignupController implements IController {
       }
       return created(userOrError.getValue())
     } catch (error) {
-      console.error(error)
       return serverError(error)
     }
   }

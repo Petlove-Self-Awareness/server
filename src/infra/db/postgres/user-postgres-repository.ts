@@ -8,8 +8,10 @@ import { IUserModel } from '../../../domain/models/user-model'
 export class UserPostgresRepository
   implements ISignupRepository, ILoadUserByEmailOrIdRepository
 {
-  private readonly prisma: PrismaClient
-  constructor(private readonly idAdapter: IUUIDValidator) {}
+  constructor(
+    private readonly idAdapter: IUUIDValidator,
+    private readonly prisma: PrismaClient
+  ) {}
 
   async signup(data: IUserModel): Promise<void> {
     await this.prisma.user.create({

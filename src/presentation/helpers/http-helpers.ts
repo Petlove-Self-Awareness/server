@@ -8,7 +8,7 @@ export const badRequest = (error: Error): HttpResponse => ({
 
 export const unprocessableEntity = (error: string): HttpResponse => ({
   statusCode: 422,
-  body: { error }
+  body: { message: error }
 })
 
 export const ok = (data: any): HttpResponse => ({

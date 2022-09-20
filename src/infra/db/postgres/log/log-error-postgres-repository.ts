@@ -1,9 +1,10 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, history } from '@prisma/client'
 import { ILogErrorRepository } from '../../../../data/protocols/db/log/log-error-repository'
 
 export class LogPostgresRepository implements ILogErrorRepository {
-  private readonly prisma: PrismaClient
+  constructor(private readonly prisma: PrismaClient) {}
   async logError(stack: string): Promise<void> {
-    await this.prisma.error.create({ data: { stack } })
+    let register: history
+    register = await this.prisma.history.create({ data: { stack } })
   }
 }
