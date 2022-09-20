@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcryptjs'
-import { IHasher } from '../../data/protocols/criptography/hasher'
+import { IHasher } from '../../../data/protocols/criptography/hasher'
 
 export class BcryptAdapter implements IHasher {
   private salt: number

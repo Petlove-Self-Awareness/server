@@ -1,4 +1,4 @@
-import { IEmailValidator } from '../../protocols/email-validator'
+import { IEmailValidator } from '../protocols/email-validator'
 import { EmailValidation } from './email-validation'
 
 interface ISutTypes {
