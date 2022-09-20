@@ -2,7 +2,7 @@ import { CompareFieldsValidation } from '../../../../../validation/validators/co
 import { EmailValidation } from '../../../../../validation/validators/email-validation'
 import { RequiredFieldValidation } from '../../../../../validation/validators/required-field-validation'
 import { ValidationComposite } from '../../../../../validation/validators/validation-composite'
-import { IValidation } from '../../../../../presentation/protocols/validation'
+import { IValidation } from '../../../../../presentation/protocols'
 import { EmailValidatorAdapter } from '../../../../../infra/adapters/validators/email-validator-adapter'
 
 const makeEmailValidatorAdapter = (): EmailValidatorAdapter => {

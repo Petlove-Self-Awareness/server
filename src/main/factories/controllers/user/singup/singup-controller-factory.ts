@@ -2,7 +2,10 @@ import { SignupController } from '../../../../../presentation/controllers/signup
 import { IController } from '../../../../../presentation/protocols/controller'
 import { makeSignUpValidation } from './signup-validation-factory'
 import { makeDbSignUp } from '../../../usecases/user/singup/signup-usecase-factory'
+import { makeLogControllerDecorator } from '../../../decorators/log-error-controller-decorator-factory'
 
 export const makeSignUpController = (): IController => {
-  return new SignupController(makeDbSignUp(), makeSignUpValidation())
+  return makeLogControllerDecorator(
+    new SignupController(makeDbSignUp(), makeSignUpValidation())
+  )
 }

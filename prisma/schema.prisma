@@ -10,6 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model error {
+  id String @id @default(uuid())
+  stack String
+}
+
 model user {
   id String @id
   name String
