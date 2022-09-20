@@ -1,13 +1,14 @@
-import { ISingupUseCase } from '../../domain/usecases/signup'
 import {
+  HttpRequest,
+  HttpResponse,
+  IController,
+  IValidation,
   badRequest,
   created,
+  unprocessableEntity,
   serverError,
-  unprocessableEntity
-} from '../helpers/http-helpers'
-import { IController } from '../protocols/controller'
-import { HttpRequest, HttpResponse } from '../protocols/http'
-import { IValidation } from '../protocols/validation'
+  ISingupUseCase
+} from './signup-controller-protocols'
 
 export class SignupController implements IController {
   constructor(

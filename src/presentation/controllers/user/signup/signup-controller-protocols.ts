@@ -1,0 +1,6 @@
+export * from '../../../protocols'
+export * from '../../../helpers/http-helpers'
+export * from '../../../../domain/usecases/signup'
+export * from '../../../../domain/logic/result'
+export * from '../../../../domain/models/user-model'
+export * from '../../../errors'

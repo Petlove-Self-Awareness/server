@@ -1,15 +1,16 @@
-import { Result } from '../../domain/logic/result'
-import { IUserModel } from '../../domain/models/user-model'
-import { ISingupUseCase, SignupData } from '../../domain/usecases/signup'
-import { ServerError } from '../errors/server-error'
+import { SignupController } from './signup-controller'
 import {
   created,
+  HttpRequest,
+  ISingupUseCase,
+  IUserModel,
+  IValidation,
+  Result,
   serverError,
-  unprocessableEntity
-} from '../helpers/http-helpers'
-import { HttpRequest } from '../protocols/http'
-import { IValidation } from '../protocols/validation'
-import { SignupController } from './signup-controller'
+  SignupData,
+  unprocessableEntity,
+  ServerError
+} from './signup-controller-protocols'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
