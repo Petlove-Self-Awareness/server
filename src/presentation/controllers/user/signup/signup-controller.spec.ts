@@ -1,3 +1,8 @@
+import {
+  AuthenticationModel,
+  ILogin,
+  InvalidParamError
+} from '../login/login-controller-protocols'
 import { SignupController } from './signup-controller'
 import {
   created,
@@ -7,9 +12,11 @@ import {
   IValidation,
   Result,
   serverError,
+  badRequest,
   SignupData,
   unprocessableEntity,
-  ServerError
+  ServerError,
+  MissingParamError
 } from './signup-controller-protocols'
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -48,17 +55,32 @@ const makeSignUpUseCaseStub = (): ISingupUseCase => {
   return new SignUpUseCaseStub()
 }
 
+const makeLoginUseCaseStub = (): ILogin => {
+  class LoginUseCaseStub implements ILogin {
+    async auth(authentication: AuthenticationModel): Promise<Result<string>> {
+      return new Promise(resolve => resolve(Result.ok('any_token')))
+    }
+  }
+  return new LoginUseCaseStub()
+}
+
 interface SutTypes {
   sut: SignupController
   signUpUseCaseStub: ISingupUseCase
   validationStub: IValidation
+  authenticationStub: ILogin
 }
 
 const makeSut = (): SutTypes => {
   const signUpUseCaseStub = makeSignUpUseCaseStub()
   const validationStub = makeValidationStub()
-  const sut = new SignupController(signUpUseCaseStub, validationStub)
-  return { sut, signUpUseCaseStub, validationStub }
+  const authenticationStub = makeLoginUseCaseStub()
+  const sut = new SignupController(
+    signUpUseCaseStub,
+    validationStub,
+    authenticationStub
+  )
+  return { sut, signUpUseCaseStub, validationStub, authenticationStub }
 }
 
 describe('SignUpController', () => {
@@ -84,13 +106,6 @@ describe('SignUpController', () => {
     expect(httpResponse).toEqual(serverError(new ServerError()))
   })
 
-  test('Should return 201 if valid data is provided', async () => {
-    const { sut } = makeSut()
-    const httpRequest = makeFakeRequest()
-    const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual(created(makeFakeUser().getValue()))
-  })
-
   test('Should return 422 if valid data is provided, but it cannot be processed', async () => {
     const { sut, signUpUseCaseStub } = makeSut()
     const httpRequest = makeFakeRequest()
@@ -101,5 +116,44 @@ describe('SignUpController', () => {
       )
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(unprocessableEntity('any_error_message'))
+  })
+
+  test('Should call Authentication with correct values', async () => {
+    const { sut, authenticationStub } = makeSut()
+    const authSpy = jest.spyOn(authenticationStub, 'auth')
+    await sut.handle(makeFakeRequest())
+    expect(authSpy).toHaveBeenCalledWith({
+      email: 'any_email@mail.com',
+      password: 'any_password'
+    })
+  })
+
+  test('Should return 400 if authentication fails', async () => {
+    const { sut, authenticationStub } = makeSut()
+    jest
+      .spyOn(authenticationStub, 'auth')
+      .mockReturnValueOnce(
+        new Promise(resolve => resolve(Result.fail('any_error')))
+      )
+    const httpRequest = makeFakeRequest()
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(badRequest(new InvalidParamError('any_error')))
+  })
+
+  test('Should return 500 if Authentication throws', async () => {
+    const { sut, authenticationStub } = makeSut()
+    jest.spyOn(authenticationStub, 'auth').mockImplementationOnce(async () => {
+      return new Promise((resolve, reject) => reject(new Error()))
+    })
+    const httpRequest = makeFakeRequest()
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(serverError(new ServerError()))
+  })
+
+  test('Should return 201 with a token if valid data is provided', async () => {
+    const { sut } = makeSut()
+    const httpRequest = makeFakeRequest()
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(created({ accessToken: 'any_token' }))
   })
 })

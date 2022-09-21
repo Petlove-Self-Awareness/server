@@ -7,13 +7,16 @@ import {
   created,
   unprocessableEntity,
   serverError,
-  ISingupUseCase
+  ISingupUseCase,
+  ILogin,
+  InvalidParamError
 } from './signup-controller-protocols'
 
 export class SignupController implements IController {
   constructor(
     private readonly singUpUseCase: ISingupUseCase,
-    private readonly validation: IValidation
+    private readonly validation: IValidation,
+    private readonly authentication: ILogin
   ) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -31,7 +34,11 @@ export class SignupController implements IController {
       if (userOrError.isFailure) {
         return unprocessableEntity(userOrError.error)
       }
-      return created(userOrError.getValue())
+      const tokenOrError = await this.authentication.auth({ email, password })
+      if (tokenOrError.isFailure) {
+        return badRequest(new InvalidParamError(tokenOrError.error))
+      }
+      return created({ accessToken: tokenOrError.getValue() })
     } catch (error) {
       return serverError(error)
     }
