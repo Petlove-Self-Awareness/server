@@ -6,20 +6,23 @@ import {
   ISignupRepository,
   IUserModel,
   SignupData,
-  IDBuilder
+  IDBuilder,
+  UserRoles
 } from './db-signup-protocols'
 
 const makeFakeAccount = (): IUserModel => ({
   id: 'valid_id',
   name: 'valid_name',
   email: 'valid_email',
-  password: 'hashed_password'
+  password: 'hashed_password',
+  role: UserRoles.employee
 })
 
 const makeFakeAccountData = (): SignupData => ({
   name: 'valid_name',
   email: 'valid_email',
-  password: 'valid_password'
+  password: 'valid_password',
+  role: UserRoles.employee
 })
 
 const makeHasher = (): IHasher => {
@@ -160,7 +163,8 @@ describe('DbSignup Usecase', () => {
       name: 'valid_name',
       email: 'valid_email',
       password: 'hashed_password',
-      id: 'valid_id'
+      id: 'valid_id',
+      role: 'employee'
     })
   })
 

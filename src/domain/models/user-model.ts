@@ -3,7 +3,7 @@ export interface IUserModel {
   name: string
   email: string
   password: string
-  // role: UserRoles
+  role: UserRoles
 }
 
 export enum UserRoles {
