@@ -3,7 +3,7 @@ import { IUUIDValidator } from '../../../data/protocols/criptography/id-validato
 import { ILoadUserByEmailOrIdRepository } from '../../../data/protocols/db/user/find-user-repository'
 import { ISignupRepository } from '../../../data/protocols/db/user/signup-repository'
 import { Result } from '../../../domain/logic/result'
-import { IUserModel } from '../../../domain/models/user-model'
+import { IUserModel, UserRoles } from '../../../domain/models/user-model'
 
 export class UserPostgresRepository
   implements ISignupRepository, ILoadUserByEmailOrIdRepository
@@ -34,6 +34,7 @@ export class UserPostgresRepository
     if (!register) {
       return Result.fail('User was not found')
     }
-    return Result.ok<IUserModel>(register)
+    const role = register.role as UserRoles
+    return Result.ok<IUserModel>({ ...register, role })
   }
 }

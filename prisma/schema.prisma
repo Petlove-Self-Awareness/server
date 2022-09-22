@@ -15,6 +15,7 @@ model user {
   name String
   email String @unique
   password String
+  role String
 }
 
 model history {

@@ -28,7 +28,7 @@ export class DbAuthentication implements ILogin {
     if (!isCorrectPassword) {
       return Result.fail('User email or password is/are incorrect')
     }
-    const token = await this.encrypter.encrypt(register.getValue().id)
+    const token = this.encrypter.encrypt(register.getValue().id)
     return Result.ok(token)
   }
 }

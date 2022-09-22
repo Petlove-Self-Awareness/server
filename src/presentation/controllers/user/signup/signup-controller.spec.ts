@@ -1,22 +1,18 @@
 import {
   AuthenticationModel,
   ILogin,
-  InvalidParamError
+  InvalidParamError,
+  ok
 } from '../login/login-controller-protocols'
 import { SignupController } from './signup-controller'
 import {
-  created,
-  HttpRequest,
+  badRequest, HttpRequest,
   ISingupUseCase,
   IUserModel,
   IValidation,
   Result,
-  serverError,
-  badRequest,
-  SignupData,
-  unprocessableEntity,
-  ServerError,
-  MissingParamError
+  serverError, ServerError, SignupData,
+  unprocessableEntity, UserRoles
 } from './signup-controller-protocols'
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -33,7 +29,8 @@ const makeFakeUser = (): Result<IUserModel> => {
     id: 'any_id',
     name: 'any_name',
     email: 'any_email@mail.com',
-    password: 'any_password'
+    password: 'any_password',
+    role: UserRoles.employee
   })
 }
 
@@ -92,7 +89,8 @@ describe('SignUpController', () => {
     expect(addSpy).toHaveBeenCalledWith({
       name: 'any_name',
       email: 'any_email@mail.com',
-      password: 'any_password'
+      password: 'any_password',
+      role: 'employee'
     })
   })
 
@@ -150,10 +148,10 @@ describe('SignUpController', () => {
     expect(httpResponse).toEqual(serverError(new ServerError()))
   })
 
-  test('Should return 201 with a token if valid data is provided', async () => {
+  test('Should return 200 with a token if valid data is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = makeFakeRequest()
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual(created({ accessToken: 'any_token' }))
+    expect(httpResponse).toEqual(ok({ accessToken: 'any_token' }))
   })
 })

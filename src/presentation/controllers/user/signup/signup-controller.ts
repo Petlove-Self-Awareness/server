@@ -4,12 +4,13 @@ import {
   IController,
   IValidation,
   badRequest,
-  created,
+  ok,
   unprocessableEntity,
   serverError,
   ISingupUseCase,
   ILogin,
-  InvalidParamError
+  InvalidParamError,
+  UserRoles
 } from './signup-controller-protocols'
 
 export class SignupController implements IController {
@@ -29,7 +30,8 @@ export class SignupController implements IController {
       const userOrError = await this.singUpUseCase.signUp({
         email,
         name,
-        password
+        password,
+        role: UserRoles.employee
       })
       if (userOrError.isFailure) {
         return unprocessableEntity(userOrError.error)
@@ -38,7 +40,8 @@ export class SignupController implements IController {
       if (tokenOrError.isFailure) {
         return badRequest(new InvalidParamError(tokenOrError.error))
       }
-      return created({ accessToken: tokenOrError.getValue() })
+      const accessToken = tokenOrError.getValue()
+      return ok({ accessToken })
     } catch (error) {
       return serverError(error)
     }

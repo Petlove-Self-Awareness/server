@@ -5,14 +5,16 @@ import {
   ILoadUserByEmailOrIdRepository,
   AuthenticationModel,
   IUserModel,
-  Result
+  Result,
+  UserRoles
 } from './db-login-protocols'
 
 const makeFakeAccount = (): IUserModel => ({
   id: 'any_id',
   email: 'any_email@mail.com',
   password: 'hashed_password',
-  name: 'any_name'
+  name: 'any_name',
+  role: UserRoles.employee
 })
 
 const makeFakeAuthentication = (): AuthenticationModel => ({
@@ -43,8 +45,8 @@ const makeHashComparerStub = (): IHashComparer => {
 
 const makeEncrypterStub = (): IEncrypter => {
   class EncrypterStub implements IEncrypter {
-    async encrypt(id: string): Promise<string> {
-      return new Promise(resolve => resolve('any_token'))
+    encrypt(id: string): string {
+      return 'any_token'
     }
   }
   return new EncrypterStub()
@@ -150,11 +152,9 @@ describe('DbAuthentication Usecase', () => {
 
   test('Should throw if Encrypter throws', async () => {
     const { encrypterStub, sut } = makeSut()
-    jest
-      .spyOn(encrypterStub, 'encrypt')
-      .mockReturnValueOnce(
-        new Promise((resolve, reject) => reject(new Error()))
-      )
+    jest.spyOn(encrypterStub, 'encrypt').mockImplementationOnce(() => {
+      throw new Error()
+    })
     const promise = sut.auth(makeFakeAuthentication())
     await expect(promise).rejects.toThrow()
   })
