@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken'
 
 export class JwtAdapter implements IEncrypter {
   async encrypt(id: string): Promise<string> {
-    return jwt.sign(id, process.env.JWT_SECRET || 'petloveServerPass')
+    return jwt.sign(id, process.env.JWT_SECRET || 'petloveServerPass', {
+      expiresIn: '24h'
+    })
   }
 }
