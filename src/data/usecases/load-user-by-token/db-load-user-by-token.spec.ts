@@ -30,8 +30,8 @@ const makeLoadUserByTokenRepoStub = (): ILoadUserByEmailOrIdRepository => {
   class LoadAccountByTokenRepositoryStub
     implements ILoadUserByEmailOrIdRepository
   {
-    async loadUserByEmailOrId(value: string): Promise<Result<IUserModel>> {
-      return Promise.resolve(Result.ok(makeFakeAccount()))
+    async loadUserByEmailOrId(value: string): Promise<IUserModel> {
+      return Promise.resolve(makeFakeAccount())
     }
   }
   return new LoadAccountByTokenRepositoryStub()
@@ -78,15 +78,13 @@ describe('DbLoadAccountByToken', () => {
     expect(loadSpy).toHaveBeenCalledWith('any_id')
   })
 
-  test('Should return fail if LoadUserByTokenRepository returns fail', async () => {
+  test('Should return fail if LoadUserByTokenRepository returns null', async () => {
     const { loadAccountByTokenRepositoryStub, sut } = makeSut()
     jest
       .spyOn(loadAccountByTokenRepositoryStub, 'loadUserByEmailOrId')
-      .mockReturnValueOnce(
-        new Promise(resolve => resolve(Result.fail('any_message')))
-      )
+      .mockReturnValueOnce(Promise.resolve(null))
     const account = await sut.load(makeFakeToken())
-    expect(account).toEqual(Result.fail('any_message'))
+    expect(account).toEqual(Result.fail('User was not found'))
   })
 
   test('Should return an result with an account on success', async () => {

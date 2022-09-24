@@ -22,7 +22,7 @@ export class DbSignUp implements ISingupUseCase {
     const { password, email, name, role } = signupData
     const userExists =
       await this.loadUserByEmailOrIdRepository.loadUserByEmailOrId(email)
-    if (userExists.isSuccess) {
+    if (userExists) {
       return Result.fail<IUserModel>('User email is already being used')
     }
     const hashedPassword = await this.hasher.hash(password)
@@ -38,6 +38,12 @@ export class DbSignUp implements ISingupUseCase {
       password: hashedPassword,
       id
     })
-    return Result.ok<IUserModel>({ name, email, password: hashedPassword, id, role })
+    return Result.ok<IUserModel>({
+      name,
+      email,
+      password: hashedPassword,
+      id,
+      role
+    })
   }
 }

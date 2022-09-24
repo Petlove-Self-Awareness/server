@@ -27,8 +27,8 @@ const makeLoadAccountByEmailRepositoryStub =
     class LoadUserByEmailOrIdRepositoryStub
       implements ILoadUserByEmailOrIdRepository
     {
-      async loadUserByEmailOrId(value: string): Promise<Result<IUserModel>> {
-        return new Promise(resolve => resolve(Result.ok(makeFakeAccount())))
+      async loadUserByEmailOrId(value: string): Promise<IUserModel> {
+        return new Promise(resolve => resolve(makeFakeAccount()))
       }
     }
     return new LoadUserByEmailOrIdRepositoryStub()
@@ -99,15 +99,11 @@ describe('DbAuthentication Usecase', () => {
     await expect(promise).rejects.toThrow()
   })
 
-  test('Should return fail if LoadUserByEmailOrIdRepository returns fail', async () => {
+  test('Should return fail if LoadUserByEmailOrIdRepository returns null', async () => {
     const { loadUserByEmailOrIdRepositoryStub, sut } = makeSut()
     jest
       .spyOn(loadUserByEmailOrIdRepositoryStub, 'loadUserByEmailOrId')
-      .mockReturnValueOnce(
-        new Promise(resolve =>
-          resolve(Result.fail('User email or password is/are incorrect'))
-        )
-      )
+      .mockReturnValueOnce(new Promise(resolve => resolve(null)))
     const accessToken = await sut.auth(makeFakeAuthentication())
     expect(accessToken).toEqual(
       Result.fail('User email or password is/are incorrect')

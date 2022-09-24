@@ -15,11 +15,13 @@ export class DbLoadAccountByToken implements ILoadUserByToken {
   async load(token: string): Promise<Result<IUserModel>> {
     const userId = this.decrypter.decrypt(token)
     if (userId) {
-      const user = await this.loadUserByIdRepository.loadUserByEmailOrId(userId)
-      if (user.isFailure) {
-        return Result.fail(user.error)
+      const userOrNull = await this.loadUserByIdRepository.loadUserByEmailOrId(
+        userId
+      )
+      if (!userOrNull) {
+        return Result.fail('User was not found')
       }
-      return Result.ok(user.getValue())
+      return Result.ok(userOrNull)
     }
     return Result.fail('User was not found')
   }
