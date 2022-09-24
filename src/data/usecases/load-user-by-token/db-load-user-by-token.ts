@@ -6,7 +6,7 @@ import {
   ILoadUserByEmailOrIdRepository
 } from './db-load-user-by-token-protocols'
 
-export class DbLoadAccountByToken implements ILoadUserByToken {
+export class DbLoadUserByToken implements ILoadUserByToken {
   constructor(
     private readonly decrypter: IDecrypter,
     private readonly loadUserByIdRepository: ILoadUserByEmailOrIdRepository

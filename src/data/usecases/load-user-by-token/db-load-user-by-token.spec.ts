@@ -1,4 +1,4 @@
-import { DbLoadAccountByToken } from './db-load-user-by-token'
+import { DbLoadUserByToken } from './db-load-user-by-token'
 import {
   IUserModel,
   IDecrypter,
@@ -40,13 +40,13 @@ const makeLoadUserByTokenRepoStub = (): ILoadUserByEmailOrIdRepository => {
 type SutTypes = {
   decrypterStub: IDecrypter
   loadAccountByTokenRepositoryStub: ILoadUserByEmailOrIdRepository
-  sut: DbLoadAccountByToken
+  sut: DbLoadUserByToken
 }
 
 const makeSut = (): SutTypes => {
   const decrypterStub = makeDecrypterStub()
   const loadAccountByTokenRepositoryStub = makeLoadUserByTokenRepoStub()
-  const sut = new DbLoadAccountByToken(
+  const sut = new DbLoadUserByToken(
     decrypterStub,
     loadAccountByTokenRepositoryStub
   )

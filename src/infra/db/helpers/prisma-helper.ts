@@ -9,6 +9,7 @@ export const PrismaHelper = {
       await this.client.$connect()
       console.log('Postgres connected!')
     }
+    console.log('Postgres is already connected!')
   },
 
   async disconnect(): Promise<void> {
@@ -17,5 +18,6 @@ export const PrismaHelper = {
       this.client = null
       console.log('Postgres disconected')
     }
+    console.log('Postgres is already disconnected!')
   }
 }
