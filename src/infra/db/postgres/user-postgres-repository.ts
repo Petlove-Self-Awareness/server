@@ -19,7 +19,7 @@ export class UserPostgresRepository
     })
   }
 
-  async loadUserByEmailOrId(value: string): Promise<Result<IUserModel>> {
+  async loadUserByEmailOrId(value: string): Promise<IUserModel> {
     let register: user
     const isUUID = this.idAdapter.isUUID(value)
     if (isUUID) {
@@ -32,9 +32,9 @@ export class UserPostgresRepository
       })
     }
     if (!register) {
-      return Result.fail('User was not found')
+      return null
     }
     const role = register.role as UserRoles
-    return Result.ok<IUserModel>({ ...register, role })
+    return { ...register, role }
   }
 }

@@ -57,10 +57,8 @@ const makeLoadUserByEmailOrIdRepositoryStub =
     class LoadAccountByEmailRepositoryStub
       implements ILoadUserByEmailOrIdRepository
     {
-      async loadUserByEmailOrId(value: string): Promise<Result<IUserModel>> {
-        return new Promise(resolve =>
-          resolve(Result.fail<IUserModel>('User was not found'))
-        )
+      async loadUserByEmailOrId(value: string): Promise<IUserModel> {
+        return new Promise(resolve => resolve(null))
       }
     }
     return new LoadAccountByEmailRepositoryStub()
@@ -139,11 +137,7 @@ describe('DbSignup Usecase', () => {
     const { sut, loadUserByEmailOrIdRepositoryStub } = makeSut()
     jest
       .spyOn(loadUserByEmailOrIdRepositoryStub, 'loadUserByEmailOrId')
-      .mockReturnValueOnce(
-        new Promise(resolve =>
-          resolve(Result.ok<IUserModel>(makeFakeAccount()))
-        )
-      )
+      .mockReturnValueOnce(Promise.resolve(makeFakeAccount()))
     const user = await sut.signUp(makeFakeAccountData())
     expect(user).toEqual(Result.fail('User email is already being used'))
   })
