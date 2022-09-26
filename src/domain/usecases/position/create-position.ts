@@ -1,10 +1,10 @@
 import { IPositionModel } from '../../models/position'
 import { Result } from '../../logic/result'
 
-export interface ICreatePosition {
-  create: (name: string) => Promise<ICreatePosition.result>
+export interface ICreatePositionUseCase {
+  create: (name: string) => Promise<ICreatePositionUseCase.result>
 }
 
-export namespace ICreatePosition {
+export namespace ICreatePositionUseCase {
   export type result = Result<IPositionModel>
 }
