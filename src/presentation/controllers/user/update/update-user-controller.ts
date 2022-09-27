@@ -4,26 +4,29 @@ import {
   HttpRequest,
   HttpResponse,
   IController,
-  IValidation
+  MissingParamError,
+  ok
 } from '../login/login-controller-protocols'
 
 export class UpdateUserController implements IController {
-  constructor(
-    private readonly validation: IValidation,
-    private readonly userUpdateUseCase: IUpdateUserUseCase
-  ) {}
+  constructor(private readonly userUpdateUseCase: IUpdateUserUseCase) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const error = this.validation.validate(httpRequest.body)
-    if (error) {
-      return badRequest(error)
+    const { name, email, password, passwordConfirmation } = httpRequest.body
+    if (!name && !email && !password) {
+      return badRequest(
+        new MissingParamError('name, email or password not informed')
+      )
     }
 
+    if (password && !passwordConfirmation) {
+      new MissingParamError('password confirmation not informed')
+    }
     const dataToUpdate = Object.assign(httpRequest.body, {
       id: httpRequest.accountId
     })
 
-    await this.userUpdateUseCase.update(dataToUpdate)
-    return null
+    const updatedUser = await this.userUpdateUseCase.update(dataToUpdate)
+    return ok(updatedUser)
   }
 }
