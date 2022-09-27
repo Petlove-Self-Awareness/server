@@ -7,7 +7,9 @@ import {
   HttpRequest,
   InvalidParamError,
   MissingParamError,
-  Result
+  Result,
+  ServerError,
+  serverError
 } from '../login/login-controller-protocols'
 import { IUserModel } from '../signup/signup-controller-protocols'
 import { UpdateUserController } from './update-user-controller'
@@ -89,4 +91,17 @@ describe('UpdateUser Controller', () => {
     console.log(dataToUpdate)
     expect(updateSpy).toHaveBeenCalledWith(dataToUpdate)
   })
+
+  test('Should return 500 if UserUpdateUseCase throws', async () => {
+    const { sut, userUpdateUseCaseStub } = makeSut()
+    jest
+      .spyOn(userUpdateUseCaseStub, 'update')
+      .mockImplementationOnce(async () => {
+        return new Promise((resolve, reject) => reject(new Error()))
+      })
+
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(serverError(new ServerError()))
+  })
+
 })
