@@ -5,6 +5,7 @@ import {
 import {
   badRequest,
   HttpRequest,
+  InvalidParamError,
   MissingParamError,
   Result
 } from '../login/login-controller-protocols'
@@ -56,11 +57,24 @@ describe('UpdateUser Controller', () => {
     const { sut } = makeSut()
     const error = await sut.handle({
       body: {
-        password: '1234'
+        password: 'any_password'
       }
     })
     expect(error).toEqual(
       badRequest(new MissingParamError('password confirmation not informed'))
+    )
+  })
+
+  test('Should return an error if the password is different from the password confirmation ', async () => {
+    const { sut } = makeSut()
+    const error = await sut.handle({
+      body: {
+        password: 'any_password',
+        passwordConfirmation: 'password_confirmation_different'
+      }
+    })
+    expect(error).toEqual(
+      badRequest(new InvalidParamError('passwordConfirmation'))
     )
   })
 
