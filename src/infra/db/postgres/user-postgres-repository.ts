@@ -2,7 +2,6 @@ import { PrismaClient, user } from '@prisma/client'
 import { IUUIDValidator } from '../../../data/protocols/criptography/id-validator'
 import { ILoadUserByEmailOrIdRepository } from '../../../data/protocols/db/user/find-user-repository'
 import { ISignupRepository } from '../../../data/protocols/db/user/signup-repository'
-import { Result } from '../../../domain/logic/result'
 import { IUserModel, UserRoles } from '../../../domain/models/user-model'
 
 export class UserPostgresRepository
