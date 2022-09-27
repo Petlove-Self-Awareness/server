@@ -18,6 +18,11 @@ model user {
   role String
 }
 
+model position {
+  id String @id
+  name String @unique
+}
+
 model history {
   id String @id @default(uuid())
   stack String
