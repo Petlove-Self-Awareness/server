@@ -20,7 +20,7 @@ const makeFakeRequest = (): HttpRequest => ({
   body: {
     positionName: 'any_name'
   },
-  accountId: 'any_account_id'
+  userId: 'any_account_id'
 })
 
 const makeFakePosition = (): Result<IPositionModel> => {

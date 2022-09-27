@@ -1,9 +1,9 @@
-import { DbLoadUserByEmail } from './db-load-user-by-email'
+import { DbLoadUserByEmail } from './db-load-user-by-id'
 import {
   ILoadUserByEmailOrIdRepository,
   Result,
   UserRoles
-} from './db-load-user-by-email-protocols'
+} from './db-load-user-by-id-protocols'
 
 const makeFakeId = (): string => 'valid_id'
 
@@ -48,7 +48,7 @@ describe('DbLoadUserByEmail', () => {
     expect(loadSpy).toHaveBeenCalledWith('valid_id')
   })
 
-  test('Should return fail if LoadUserByTokenRepository returns null', async () => {
+  test('Should return fail if LoadUserByIdRepository returns null', async () => {
     const { loadUserByIdRepositoryStub, sut } = makeSut()
     jest
       .spyOn(loadUserByIdRepositoryStub, 'loadUserByEmailOrId')
@@ -63,7 +63,7 @@ describe('DbLoadUserByEmail', () => {
     expect(account).toEqual(Result.ok(makeFakeUser()))
   })
 
-  test('Should throw if LoadAccountByTokenRepository throws', async () => {
+  test('Should throw if LoadUserByIdRepository throws', async () => {
     const { loadUserByIdRepositoryStub, sut } = makeSut()
     jest
       .spyOn(loadUserByIdRepositoryStub, 'loadUserByEmailOrId')

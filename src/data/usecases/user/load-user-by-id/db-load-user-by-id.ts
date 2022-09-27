@@ -2,7 +2,7 @@ import {
   ILoadUserByIdUseCase,
   ILoadUserByEmailOrIdRepository,
   Result
-} from './db-load-user-by-email-protocols'
+} from './db-load-user-by-id-protocols'
 
 export class DbLoadUserByEmail implements ILoadUserByIdUseCase {
   constructor(
