@@ -20,12 +20,14 @@ export class UpdateUserController implements IController {
     }
 
     if (password && !passwordConfirmation) {
-      new MissingParamError('password confirmation not informed')
+      return badRequest(
+        new MissingParamError('password confirmation not informed')
+      )
     }
     const dataToUpdate = Object.assign(httpRequest.body, {
       id: httpRequest.accountId
     })
-
+    
     const updatedUser = await this.userUpdateUseCase.update(dataToUpdate)
     return ok(updatedUser)
   }
