@@ -7,11 +7,12 @@ import {
   HttpRequest,
   InvalidParamError,
   MissingParamError,
+  ok,
   Result,
   ServerError,
   serverError
 } from '../login/login-controller-protocols'
-import { IUserModel } from '../signup/signup-controller-protocols'
+import { IUserModel, UserRoles } from '../signup/signup-controller-protocols'
 import { UpdateUserController } from './update-user-controller'
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -24,10 +25,20 @@ const makeFakeRequest = (): HttpRequest => ({
   }
 })
 
+const makeFakeUser = (): Result<IUserModel> => {
+  return Result.ok({
+    id: 'any_id',
+    name: 'any_name',
+    email: 'any_email@mail.com',
+    password: 'any_password',
+    role: UserRoles.employee
+  })
+}
+
 const makeUserUpdateUseCaseStub = (): IUpdateUserUseCase => {
   class UpdateUserUseCaseStub implements IUpdateUserUseCase {
     update(updateUserDto: UpdateUserDto): Promise<Result<IUserModel>> {
-      return null
+      return Promise.resolve(makeFakeUser())
     }
   }
   return new UpdateUserUseCaseStub()
@@ -88,7 +99,6 @@ describe('UpdateUser Controller', () => {
     const dataToUpdate = Object.assign(httpRequest.body, {
       id: httpRequest.accountId
     })
-    console.log(dataToUpdate)
     expect(updateSpy).toHaveBeenCalledWith(dataToUpdate)
   })
 
@@ -104,4 +114,10 @@ describe('UpdateUser Controller', () => {
     expect(httpResponse).toEqual(serverError(new ServerError()))
   })
 
+  test('Should return 200 if UpdateUserController success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(makeFakeRequest())
+    const fakeUser = makeFakeUser()
+    expect(httpResponse).toEqual(ok(fakeUser.getValue()))
+  })
 })
