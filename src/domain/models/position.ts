@@ -10,6 +10,10 @@ export class Position {
   private id: string
   private positionName: PositionName
 
+  get name(): PositionName {
+    return this.positionName
+  }
+
   private constructor(props: PositionCreationProps) {
     this.id = props.id
     this.positionName = props.positionName

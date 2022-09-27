@@ -1,2 +1,6 @@
 export * from '../../../../domain/usecases/position/create-position'
 export * from '../../../../domain/models/position'
+export * from '../../../protocols/db/position/create-position'
+export * from '../../../protocols/db/position/load-position-by-id'
+export * from '../../../protocols/criptography'
+export * from '../../load-user-by-token/db-load-user-by-token-protocols'
