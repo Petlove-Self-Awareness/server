@@ -3,11 +3,12 @@ import {
   UpdateUserDto
 } from '../../../../domain/usecases/user/update-user'
 import {
+  badRequest,
   HttpRequest,
-  IValidation,
+  MissingParamError,
   Result
 } from '../login/login-controller-protocols'
-import { IUserModel, UserRoles } from '../signup/signup-controller-protocols'
+import { IUserModel } from '../signup/signup-controller-protocols'
 import { UpdateUserController } from './update-user-controller'
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -18,25 +19,6 @@ const makeFakeRequest = (): HttpRequest => ({
     password: 'any_password'
   }
 })
-
-const makeFakeUser = (): Result<IUserModel> => {
-  return Result.ok({
-    id: 'any_id',
-    name: 'any_name',
-    email: 'any_email@mail.com',
-    password: 'any_password',
-    role: UserRoles.employee
-  })
-}
-
-const makeValidationStub = (): IValidation => {
-  class ValidationStub implements IValidation {
-    validate(input: any): Error | null {
-      return null
-    }
-  }
-  return new ValidationStub()
-}
 
 const makeUserUpdateUseCaseStub = (): IUpdateUserUseCase => {
   class UpdateUserUseCaseStub implements IUpdateUserUseCase {
@@ -49,27 +31,24 @@ const makeUserUpdateUseCaseStub = (): IUpdateUserUseCase => {
 
 interface ISutTypes {
   sut: UpdateUserController
-  validationStub: IValidation
   userUpdateUseCaseStub: IUpdateUserUseCase
 }
 const makeSut = (): ISutTypes => {
   const userUpdateUseCaseStub = makeUserUpdateUseCaseStub()
-  const validationStub = makeValidationStub()
-  const sut = new UpdateUserController(validationStub, userUpdateUseCaseStub)
+  const sut = new UpdateUserController(userUpdateUseCaseStub)
   return {
     sut,
-    validationStub,
     userUpdateUseCaseStub
   }
 }
 
 describe('UpdateUser Controller', () => {
-  test('Should call Validation with correct values', async () => {
-    const { sut, validationStub } = makeSut()
-    const validateSpy = jest.spyOn(validationStub, 'validate')
-    const httpRequest = makeFakeRequest()
-    await sut.handle(httpRequest)
-    expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
+  test('UpdateUserController should return an error if no field is provided for update', async () => {
+    const { sut } = makeSut()
+    const error = await sut.handle({ body: {} })
+    expect(error).toEqual(
+      badRequest(new MissingParamError('name, email or password not informed'))
+    )
   })
 
   test('Should call IUpdateUserUseCase with correct values', async () => {
