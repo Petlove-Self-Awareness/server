@@ -10,7 +10,7 @@ import {
   UserRoles
 } from './db-signup-protocols'
 
-const makeFakeAccount = (): IUserModel => ({
+const makeFakeAccount = (): ILoadUserByEmailOrIdRepository.Result => ({
   id: 'valid_id',
   name: 'valid_name',
   email: 'valid_email',
@@ -57,7 +57,9 @@ const makeLoadUserByEmailOrIdRepositoryStub =
     class LoadAccountByEmailRepositoryStub
       implements ILoadUserByEmailOrIdRepository
     {
-      async loadUserByEmailOrId(value: string): Promise<IUserModel> {
+      async loadUserByEmailOrId(
+        value: string
+      ): Promise<ILoadUserByEmailOrIdRepository.Result> {
         return new Promise(resolve => resolve(null))
       }
     }
