@@ -16,7 +16,8 @@ const makeFakeRequest = (): HttpRequest => ({
   body: {
     name: 'any_name',
     email: 'any_email@mail.com',
-    password: 'any_password'
+    password: 'any_password',
+    passwordConfirmation: 'any_password'
   }
 })
 
@@ -43,11 +44,23 @@ const makeSut = (): ISutTypes => {
 }
 
 describe('UpdateUser Controller', () => {
-  test('UpdateUserController should return an error if no field is provided for update', async () => {
+  test('Should return an error if no field is provided for update', async () => {
     const { sut } = makeSut()
     const error = await sut.handle({ body: {} })
     expect(error).toEqual(
       badRequest(new MissingParamError('name, email or password not informed'))
+    )
+  })
+
+  test('Should return an error if password is informed and passwordConfirmation is not provided', async () => {
+    const { sut } = makeSut()
+    const error = await sut.handle({
+      body: {
+        password: '1234'
+      }
+    })
+    expect(error).toEqual(
+      badRequest(new MissingParamError('password confirmation not informed'))
     )
   })
 
@@ -59,6 +72,7 @@ describe('UpdateUser Controller', () => {
     const dataToUpdate = Object.assign(httpRequest.body, {
       id: httpRequest.accountId
     })
+    console.log(dataToUpdate)
     expect(updateSpy).toHaveBeenCalledWith(dataToUpdate)
   })
 })
