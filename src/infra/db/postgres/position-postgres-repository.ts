@@ -1,5 +1,6 @@
 import { position, PrismaClient } from '@prisma/client'
 import { ICreatePositionRepository } from '../../../data/protocols/db/position/create-position'
+import { IDeletePositionRepository } from '../../../data/protocols/db/position/delete-position'
 import { ILoadPositionByIdRepository } from '../../../data/protocols/db/position/load-position-by-id'
 import { ILoadPositionByNameRepository } from '../../../data/protocols/db/position/load-position-by-name'
 import { ILoadPositionsRepository } from '../../../data/protocols/db/position/load-positions'
@@ -10,7 +11,8 @@ export class PositionPostgresRepository
     ICreatePositionRepository,
     ILoadPositionByNameRepository,
     ILoadPositionByIdRepository,
-    ILoadPositionsRepository
+    ILoadPositionsRepository,
+    IDeletePositionRepository
 {
   constructor(private readonly prisma: PrismaClient) {}
   async create(positionData: IPositionModel): Promise<void> {
@@ -54,5 +56,13 @@ export class PositionPostgresRepository
       id: position.id,
       positionName: position.name
     }))
+  }
+
+  async delete(id: string): Promise<void> {
+    const result = await this.loadById(id)
+    if (!result) {
+      return null
+    }
+    await this.prisma.position.delete({ where: { id } })
   }
 }
