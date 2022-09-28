@@ -18,6 +18,12 @@ export class UserEmail extends ValueObject<UserEmailProps> {
     if (!email) {
       return Result.fail<UserEmail>('User name cannot be empty')
     }
-    
+    email = email.trim()
+    const validatorEmailRegex =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+
+    if (!validatorEmailRegex.test(email)) {
+      return Result.fail<UserEmail>('Email provided is invalid')
+    }
   }
 }
