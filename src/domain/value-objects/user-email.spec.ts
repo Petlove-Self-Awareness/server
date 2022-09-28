@@ -10,4 +10,9 @@ describe('UserEmail', () => {
     const result = UserEmail.create('email_invalid.com')
     expect(result.isFailure).toBe(true)
   })
+
+  test('Should return an UserEmail if email passes validations', () => {
+    const result = UserEmail.create('valid_email@mail.com')
+    expect(result.isSuccess).toBe(true)
+  })
 })
