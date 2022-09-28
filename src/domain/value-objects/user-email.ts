@@ -25,5 +25,7 @@ export class UserEmail extends ValueObject<UserEmailProps> {
     if (!validatorEmailRegex.test(email)) {
       return Result.fail<UserEmail>('Email provided is invalid')
     }
+    const createdEmail = new UserEmail({ email })
+    return Result.ok<UserEmail>(createdEmail)
   }
 }
