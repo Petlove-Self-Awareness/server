@@ -2,6 +2,7 @@ import {
   IUpdateUserUseCase,
   UpdateUserDto
 } from '../../../domain/usecases/user/update-user'
+import { Result } from '../load-user-by-token/db-load-user-by-token-protocols'
 import {
   ILoadUserByEmailOrIdRepository,
   IUserModel,
@@ -55,5 +56,29 @@ describe('DbUpdateUser', () => {
     const updateUserDto = makeFakeUpdateUserDto()
     await sut.update(updateUserDto)
     expect(loadUserSpy).toHaveBeenCalledWith(updateUserDto.id)
+  })
+
+  test('Should return fail if ILoadUserByEmailOrIdRepository returns fail', async () => {
+    const { sut, loadUserByEmailOrIdRepositoryStub } = makeSut()
+    jest
+      .spyOn(loadUserByEmailOrIdRepositoryStub, 'loadUserByEmailOrId')
+      .mockReturnValueOnce(null)
+
+    const response = await sut.update(makeFakeUpdateUserDto())
+    expect(response).toEqual(Result.fail<IUserModel>('Invalid user id'))
+  })
+
+  test('Should throw if LoadUserByEmailOrIdRepository throws', async () => {
+    const { sut, loadUserByEmailOrIdRepositoryStub } = makeSut()
+    jest
+      .spyOn(loadUserByEmailOrIdRepositoryStub, 'loadUserByEmailOrId')
+      .mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+
+    const promise = sut.update(makeFakeUpdateUserDto())
+    await expect(promise).rejects.toThrow()
+  })
+
+  test('Must call addChange if it succeeds in creating a UserName', () => {
+    
   })
 })
