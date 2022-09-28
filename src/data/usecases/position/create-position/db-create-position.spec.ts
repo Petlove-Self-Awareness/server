@@ -42,7 +42,7 @@ const makeLoadPositionByNameRepositoryStub =
     class LoadPositionByNameRepositoryStub
       implements ILoadPositionByNameRepository
     {
-      async load(name: string): Promise<IPositionModel> {
+      async loadByName(name: string): Promise<IPositionModel> {
         return Promise.resolve(null)
       }
     }
@@ -84,7 +84,7 @@ describe('DbCreatePositionUseCase', () => {
 
   test('Should call LoadPositionByNameRepository with correct values', async () => {
     const { sut, loadPositionByNameRepositoryStub } = makeSut()
-    const loadUserSpy = jest.spyOn(loadPositionByNameRepositoryStub, 'load')
+    const loadUserSpy = jest.spyOn(loadPositionByNameRepositoryStub, 'loadByName')
     await sut.create(makeFakePositionData().positionName)
     expect(loadUserSpy).toHaveBeenCalledWith(
       makeFakePositionData().positionName
@@ -94,7 +94,7 @@ describe('DbCreatePositionUseCase', () => {
   test('Should throw if LoadPositionByNameRepository throws', async () => {
     const { sut, loadPositionByNameRepositoryStub } = makeSut()
     jest
-      .spyOn(loadPositionByNameRepositoryStub, 'load')
+      .spyOn(loadPositionByNameRepositoryStub, 'loadByName')
       .mockReturnValueOnce(
         new Promise((resolve, reject) => reject(new Error()))
       )
@@ -105,7 +105,7 @@ describe('DbCreatePositionUseCase', () => {
   test('Should return fail if LoadPositionByNameRepository finds a position', async () => {
     const { sut, loadPositionByNameRepositoryStub } = makeSut()
     jest
-      .spyOn(loadPositionByNameRepositoryStub, 'load')
+      .spyOn(loadPositionByNameRepositoryStub, 'loadByName')
       .mockReturnValueOnce(Promise.resolve(makeFakePosition()))
     const user = await sut.create(makeFakePositionData().positionName)
     expect(user).toEqual(Result.fail('Position already exists'))

@@ -9,7 +9,7 @@ export class DbLoadPositionById implements ILoadPositionById {
     private readonly loadPositionByIdRepository: ILoadPositionByIdRepository
   ) {}
   async load(id: string): Promise<ILoadPositionById.result> {
-    const position = await this.loadPositionByIdRepository.load(id)
+    const position = await this.loadPositionByIdRepository.loadById(id)
     if (!position) {
       return Result.fail('No position register was found')
     }

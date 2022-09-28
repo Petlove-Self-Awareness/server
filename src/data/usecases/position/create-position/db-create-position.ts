@@ -19,7 +19,7 @@ export class DbCreatePositionUseCase implements ICreatePositionUseCase {
     if (validPosition.isFailure) {
       return Result.fail(validPosition.error)
     }
-    const alreadyExists = await this.loadPositionByNameRepo.load(
+    const alreadyExists = await this.loadPositionByNameRepo.loadByName(
       validPosition.getValue().name.value
     )
     if (alreadyExists) {

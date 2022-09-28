@@ -38,6 +38,7 @@ export class CreatePositionController implements IController {
       const position = positionOrError.getValue()
       return ok(position)
     } catch (error) {
+      console.error(error)
       return serverError(error)
     }
   }

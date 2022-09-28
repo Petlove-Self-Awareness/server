@@ -13,7 +13,7 @@ const makeFakePosition = (): ILoadPositionByIdRepository.Result => ({
 
 const makeLoadPositionByIdRepoStub = (): ILoadPositionByIdRepository => {
   class LoadPositionByIdRepositoryStub implements ILoadPositionByIdRepository {
-    async load(value: string): Promise<ILoadPositionByIdRepository.Result> {
+    async loadById(value: string): Promise<ILoadPositionByIdRepository.Result> {
       return Promise.resolve(makeFakePosition())
     }
   }
@@ -34,7 +34,7 @@ const makeSut = (): SutTypes => {
 describe('DbLoadPositionById', () => {
   test('Should call LoadPositionByIdRepository with correct values', async () => {
     const { loadPositionByIdRepositoryStub, sut } = makeSut()
-    const loadSpy = jest.spyOn(loadPositionByIdRepositoryStub, 'load')
+    const loadSpy = jest.spyOn(loadPositionByIdRepositoryStub, 'loadById')
     await sut.load(makeFakeId())
     expect(loadSpy).toHaveBeenCalledWith('valid_id')
   })
@@ -42,7 +42,7 @@ describe('DbLoadPositionById', () => {
   test('Should return fail if LoadPositionByIdRepository returns null', async () => {
     const { loadPositionByIdRepositoryStub, sut } = makeSut()
     jest
-      .spyOn(loadPositionByIdRepositoryStub, 'load')
+      .spyOn(loadPositionByIdRepositoryStub, 'loadById')
       .mockReturnValueOnce(Promise.resolve(null))
     const account = await sut.load(makeFakeId())
     expect(account).toEqual(Result.fail('No position register was found'))
@@ -57,7 +57,7 @@ describe('DbLoadPositionById', () => {
   test('Should throw if LoadPositionByIdRepository throws', async () => {
     const { loadPositionByIdRepositoryStub, sut } = makeSut()
     jest
-      .spyOn(loadPositionByIdRepositoryStub, 'load')
+      .spyOn(loadPositionByIdRepositoryStub, 'loadById')
       .mockReturnValueOnce(Promise.reject(new Error()))
     const promise = sut.load(makeFakeId())
     await expect(promise).rejects.toThrow()
