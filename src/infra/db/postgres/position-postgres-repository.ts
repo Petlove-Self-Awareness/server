@@ -58,7 +58,7 @@ export class PositionPostgresRepository
     }))
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<IDeletePositionRepository.Result> {
     const result = await this.loadById(id)
     if (!result) {
       return null
