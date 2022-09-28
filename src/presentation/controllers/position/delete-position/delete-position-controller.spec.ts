@@ -2,12 +2,17 @@ import { DeletePositionController } from './delete-position-controller'
 import {
   HttpRequest,
   IDeletePositionUseCase,
+  ILoadUserByIdUseCase,
   noContent,
   notFound,
   Result,
   serverError,
   ServerError,
-  unauthorized
+  unauthorized,
+  UserRoles,
+  IUserModel,
+  forbidden,
+  UnauthorizedError
 } from './delete-position-protocols'
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -21,6 +26,14 @@ const makeFakePosition = (): Result<IDeletePositionUseCase.result> => {
   return Result.ok()
 }
 
+const makeFakeUser = (): IUserModel => ({
+  id: 'any_account_id',
+  name: 'any_name',
+  email: 'any_email@mail.com',
+  password: 'any_password',
+  role: UserRoles.admin
+})
+
 const makeDeletePositionUseCaseStub = (): IDeletePositionUseCase => {
   class DeletePositionByIdUseCaseStub implements IDeletePositionUseCase {
     delete(id: string): Promise<IDeletePositionUseCase.result> {
@@ -30,21 +43,62 @@ const makeDeletePositionUseCaseStub = (): IDeletePositionUseCase => {
   return new DeletePositionByIdUseCaseStub()
 }
 
+const makeLoadUserUseCaseStub = (): ILoadUserByIdUseCase => {
+  class LoadUserByIdUseCaseStub implements ILoadUserByIdUseCase {
+    load(id: string): Promise<ILoadUserByIdUseCase.result> {
+      return Promise.resolve(Result.ok(makeFakeUser()))
+    }
+  }
+  return new LoadUserByIdUseCaseStub()
+}
+
 interface SutTypes {
   sut: DeletePositionController
   deletePositionUseCaseStub: IDeletePositionUseCase
+  loadUserByIdUseCaseStub: ILoadUserByIdUseCase
 }
 
 const makeSut = (): SutTypes => {
   const deletePositionUseCaseStub = makeDeletePositionUseCaseStub()
-  const sut = new DeletePositionController(deletePositionUseCaseStub)
+  const loadUserByIdUseCaseStub = makeLoadUserUseCaseStub()
+  const sut = new DeletePositionController(
+    deletePositionUseCaseStub,
+    loadUserByIdUseCaseStub
+  )
   return {
     sut,
-    deletePositionUseCaseStub
+    deletePositionUseCaseStub,
+    loadUserByIdUseCaseStub
   }
 }
 
 describe('DeletePositionController', () => {
+  test('Should call LoadUserByIdUseCase with correct values', async () => {
+    const { sut, loadUserByIdUseCaseStub } = makeSut()
+    const useCaseSpy = jest.spyOn(loadUserByIdUseCaseStub, 'load')
+    const httpRequest = makeFakeRequest()
+    await sut.handle(httpRequest)
+    expect(useCaseSpy).toHaveBeenCalledWith('any_account_id')
+  })
+
+  test('Should return 403 user is not an admin', async () => {
+    const { sut, loadUserByIdUseCaseStub } = makeSut()
+    const httpRequest = makeFakeRequest()
+    jest.spyOn(loadUserByIdUseCaseStub, 'load').mockReturnValueOnce(
+      Promise.resolve(
+        Result.ok({
+          id: 'any_account_id',
+          name: 'any_name',
+          email: 'any_email@mail.com',
+          password: 'any_password',
+          role: UserRoles.manager
+        })
+      )
+    )
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(forbidden(new UnauthorizedError()))
+  })
+
   test('Should call IDeletePositionUseCase with correct values', async () => {
     const { sut, deletePositionUseCaseStub } = makeSut()
     const useCaseSpy = jest.spyOn(deletePositionUseCaseStub, 'delete')
