@@ -1,9 +1,9 @@
 import { IPositionModel } from '../../../../domain/models/position'
 
-export interface ILoadPositionByNameRepository {
-  load: (name: string) => Promise<ILoadPositionByNameRepository.Result>
+export interface ILoadPositionByIdRepository {
+  load: (id: string) => Promise<ILoadPositionByIdRepository.Result>
 }
 
-export namespace ILoadPositionByNameRepository {
+export namespace ILoadPositionByIdRepository {
   export type Result = IPositionModel
 }

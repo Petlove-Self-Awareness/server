@@ -1,6 +1,6 @@
 import { position, PrismaClient } from '@prisma/client'
 import { ICreatePositionRepository } from '../../../data/protocols/db/position/create-position'
-import { ILoadPositionByNameRepository } from '../../../data/protocols/db/position/load-position-by-id'
+import { ILoadPositionByNameRepository } from '../../../data/protocols/db/position/load-position-by-name'
 import { IPositionModel } from '../../../domain/models/position'
 
 export class PositionPostgresRepository
