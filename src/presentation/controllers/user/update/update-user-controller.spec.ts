@@ -16,7 +16,7 @@ import { IUserModel, UserRoles } from '../signup/signup-controller-protocols'
 import { UpdateUserController } from './update-user-controller'
 
 const makeFakeRequest = (): HttpRequest => ({
-  accountId: 'any_id',
+  userId: 'any_id',
   body: {
     name: 'any_name',
     email: 'any_email@mail.com',
@@ -86,9 +86,7 @@ describe('UpdateUser Controller', () => {
         passwordConfirmation: 'password_confirmation_different'
       }
     })
-    expect(error).toEqual(
-      badRequest(new InvalidParamError('passwordConfirmation'))
-    )
+    expect(error).toEqual(badRequest(new InvalidParamError('passwordConfirmation')))
   })
 
   test('Should call IUpdateUserUseCase with correct values', async () => {
@@ -97,18 +95,16 @@ describe('UpdateUser Controller', () => {
     const httpRequest = makeFakeRequest()
     await sut.handle(httpRequest)
     const dataToUpdate = Object.assign(httpRequest.body, {
-      id: httpRequest.accountId
+      id: httpRequest.userId
     })
     expect(updateSpy).toHaveBeenCalledWith(dataToUpdate)
   })
 
   test('Should return 500 if UserUpdateUseCase throws', async () => {
     const { sut, userUpdateUseCaseStub } = makeSut()
-    jest
-      .spyOn(userUpdateUseCaseStub, 'update')
-      .mockImplementationOnce(async () => {
-        return new Promise((resolve, reject) => reject(new Error()))
-      })
+    jest.spyOn(userUpdateUseCaseStub, 'update').mockImplementationOnce(async () => {
+      return new Promise((resolve, reject) => reject(new Error()))
+    })
 
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new ServerError()))
