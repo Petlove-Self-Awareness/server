@@ -52,17 +52,12 @@ const makeSignupRepositoryStub = (): ISignupRepository => {
   return new SignupRepositoryStub()
 }
 
-const makeLoadUserByEmailOrIdRepositoryStub =
-  (): ILoadUserByEmailOrIdRepository => {
-    class LoadAccountByEmailRepositoryStub
-      implements ILoadUserByEmailOrIdRepository
-    {
-      async loadUserByEmailOrId(
-        value: string
-      ): Promise<ILoadUserByEmailOrIdRepository.Result> {
-        return new Promise(resolve => resolve(null))
-      }
-
+const makeLoadUserByEmailOrIdRepositoryStub = (): ILoadUserByEmailOrIdRepository => {
+  class LoadAccountByEmailRepositoryStub implements ILoadUserByEmailOrIdRepository {
+    async loadUserByEmailOrId(
+      value: string
+    ): Promise<ILoadUserByEmailOrIdRepository.Result> {
+      return new Promise(resolve => resolve(null))
     }
   }
   return new LoadAccountByEmailRepositoryStub()

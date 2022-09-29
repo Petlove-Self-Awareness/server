@@ -7,7 +7,9 @@ import {
   InvalidParamError,
   MissingParamError,
   ok,
-  serverError
+  Result,
+  serverError,
+  unprocessableEntity
 } from '../login/login-controller-protocols'
 
 export class UpdateUserController implements IController {
@@ -17,24 +19,22 @@ export class UpdateUserController implements IController {
     try {
       const { name, email, password, passwordConfirmation } = httpRequest.body
       if (!name && !email && !password) {
-        return badRequest(
-          new MissingParamError('name, email or password not informed')
-        )
+        return badRequest(new MissingParamError('name, email or password not informed'))
       }
       if (password && !passwordConfirmation) {
-        return badRequest(
-          new MissingParamError('password confirmation not informed')
-        )
+        return badRequest(new MissingParamError('password confirmation not informed'))
       }
       if (password !== passwordConfirmation) {
         return badRequest(new InvalidParamError('passwordConfirmation'))
       }
 
       const dataToUpdate = Object.assign(httpRequest.body, {
-        id: httpRequest.accountId
+        id: httpRequest.userId
       })
-      console.log(dataToUpdate)
       const updatedUser = await this.userUpdateUseCase.update(dataToUpdate)
+      if (updatedUser.isFailure) {
+        return unprocessableEntity(updatedUser.error)
+      }
       return ok(updatedUser.getValue())
     } catch (error) {
       return serverError(error)
