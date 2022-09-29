@@ -33,6 +33,7 @@ export class UpdateUserController implements IController {
       const dataToUpdate = Object.assign(httpRequest.body, {
         id: httpRequest.accountId
       })
+      console.log(dataToUpdate)
       const updatedUser = await this.userUpdateUseCase.update(dataToUpdate)
       return ok(updatedUser.getValue())
     } catch (error) {

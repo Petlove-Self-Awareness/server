@@ -1,7 +1,7 @@
 import { Result } from '../../logic/result'
 import { IUserModel } from '../../models/user-model'
 
-export interface UpdateUserDto {
+export interface UpdateUserData {
   id: string
   name?: string
   email?: string
@@ -9,5 +9,5 @@ export interface UpdateUserDto {
 }
 
 export interface IUpdateUserUseCase {
-  update: (updateUserDto: UpdateUserDto) => Promise<Result<IUserModel>>
+  update: (updateUserData: UpdateUserData) => Promise<Result<IUserModel>>
 }

@@ -3,13 +3,20 @@ import { SignupData } from '../usecases/signup'
 import { UserEmail } from '../value-objects/user-email'
 import { UserName } from '../value-objects/user-name'
 import { UserPassword } from '../value-objects/user-password'
-import { IUserModel, UserRoles } from './user-model'
+import { UserRoles } from './user-model'
 
 export interface UserCreationProps {
   id: string
   name: UserName
   email: UserEmail
   password: UserPassword
+  role: UserRoles
+}
+
+export interface UserRetrieveProps {
+  id: string
+  name: string
+  email: string
   role: UserRoles
 }
 
@@ -36,18 +43,6 @@ export class User {
     return this.userRole
   }
 
-  set updateName(name: UserName) {
-    this.name = name
-  }
-
-  set updateEmail(email: UserEmail) {
-    this.email = email
-  }
-
-  set updatePassword(password: UserPassword) {
-    this.password = password
-  }
-
   public static create(props: SignupData, id: string): Result<User> {
     const { email, name, password, role } = props
     const nameOrError = UserName.create(name)
@@ -66,15 +61,5 @@ export class User {
       role
     })
     return Result.ok<User>(user)
-  }
-
-  public convertToModel(): IUserModel {
-    return {
-      id: this.id,
-      name: this.name.value,
-      email: this.email.value,
-      password: this.password.value,
-      role: this.role
-    }
   }
 }

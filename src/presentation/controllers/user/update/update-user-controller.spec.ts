@@ -1,6 +1,6 @@
 import {
   IUpdateUserUseCase,
-  UpdateUserDto
+  UpdateUserData
 } from '../../../../domain/usecases/user/update-user'
 import {
   badRequest,
@@ -37,7 +37,7 @@ const makeFakeUser = (): Result<IUserModel> => {
 
 const makeUserUpdateUseCaseStub = (): IUpdateUserUseCase => {
   class UpdateUserUseCaseStub implements IUpdateUserUseCase {
-    update(updateUserDto: UpdateUserDto): Promise<Result<IUserModel>> {
+    update(updateUserData: UpdateUserData): Promise<Result<IUserModel>> {
       return Promise.resolve(makeFakeUser())
     }
   }

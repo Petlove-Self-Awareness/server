@@ -1,50 +1,42 @@
 import { User } from '../../../domain/models/user'
 import {
   IUpdateUserUseCase,
-  UpdateUserDto
+  UpdateUserData
 } from '../../../domain/usecases/user/update-user'
 import { UserEmail } from '../../../domain/value-objects/user-email'
 import { UserName } from '../../../domain/value-objects/user-name'
 import { UserPassword } from '../../../domain/value-objects/user-password'
+import { UserPostgresRepository } from '../../../infra/db/postgres/user-postgres-repository'
 import { IUpdateUserRepository } from '../../protocols/db/user/update-user-repository'
 import { Result } from '../load-user-by-token/db-load-user-by-token-protocols'
-import { ILoadUserByEmailOrIdRepository, IUserModel } from '../signup/db-signup-protocols'
+import {
+  IHasher,
+  ILoadUserByEmailOrIdRepository,
+  IUserModel
+} from '../signup/db-signup-protocols'
 
 export class DbUpdateUser implements IUpdateUserUseCase {
   constructor(
     private readonly loadUserByEmailOrIdRepository: ILoadUserByEmailOrIdRepository,
+    private readonly hasher: IHasher,
     private readonly updateUserRepository: IUpdateUserRepository
   ) {}
 
-  async update(updateUserDto: UpdateUserDto): Promise<Result<IUserModel>> {
-    const { id, name, email, password } = updateUserDto
+  async update(updateUserData: UpdateUserData): Promise<Result<IUserModel>> {
+    const { id, name, email, password } = updateUserData
     const userExists = await this.loadUserByEmailOrIdRepository.loadUserByEmailOrId(id)
     if (!userExists) {
       return Result.fail<IUserModel>('Invalid user id')
     }
-    const userResult: Result<User> = User.create(
-      {
-        name: userExists.name,
-        email: userExists.email,
-        password: userExists.password,
-        role: userExists.role
-      },
-      userExists.id
-    )
-    if (userResult.isFailure) {
-      throw new Error('Error when retrieving from database')
-    }
 
-    let userInstance: User = userResult.getValue()
-
-    let user: UpdateUserDto = {
-      id: updateUserDto.id
+    let user: UpdateUserData = {
+      id: userExists.id
     }
 
     if (name) {
       const nameOrError: Result<UserName> = UserName.create(name)
       if (nameOrError.isSuccess) {
-        userInstance.updateName = nameOrError.getValue()
+        user.name = name
       } else {
         return Result.fail(nameOrError.error)
       }
@@ -53,7 +45,7 @@ export class DbUpdateUser implements IUpdateUserUseCase {
     if (email) {
       const emailOrError = UserEmail.create(email)
       if (emailOrError.isSuccess) {
-        userInstance.updateEmail = emailOrError.getValue()
+        user.email = email
       } else {
         return Result.fail(emailOrError.error)
       }
@@ -62,12 +54,13 @@ export class DbUpdateUser implements IUpdateUserUseCase {
     if (password) {
       const passwordOrError = UserPassword.create(password)
       if (passwordOrError.isSuccess) {
-        userInstance.updatePassword = passwordOrError.getValue()
+        const hashedPassword = await this.hasher.hash(password)
+        user.password = hashedPassword
       } else {
         return Result.fail(passwordOrError.error)
       }
     }
 
-    await this.updateUserRepository.update(userInstance.convertToModel())
+    await this.updateUserRepository.update(user)
   }
 }

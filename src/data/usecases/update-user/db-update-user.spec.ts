@@ -1,30 +1,32 @@
-import { UpdateUserDto } from '../../../domain/usecases/user/update-user'
+import { UpdateUserData } from '../../../domain/usecases/user/update-user'
 import { IUpdateUserRepository } from '../../protocols/db/user/update-user-repository'
 import { Result } from '../load-user-by-token/db-load-user-by-token-protocols'
 import {
+  IHasher,
   ILoadUserByEmailOrIdRepository,
   IUserModel,
   UserRoles
 } from '../signup/db-signup-protocols'
 import { DbUpdateUser } from './db-update-user'
 
-const makeFakeUpdateUserDto = (): UpdateUserDto => ({
+const makeFakeUpdateUserData = (): UpdateUserData => ({
+  id: 'any_id',
+  name: 'any_name',
+  email: 'any_email@mail.com'
+})
+
+const makeFakeUserExists = (): IUserModel => ({
   id: 'any_id',
   name: 'any_name',
   email: 'any_email@mail.com',
-  password: 'Any_password123@'
+  password: 'hashed_password',
+  role: UserRoles.employee
 })
 
 const makeLoadUserByEmailOrIdRepository = (): ILoadUserByEmailOrIdRepository => {
   class LoadUserByEmailOrIdRepositoryStub implements ILoadUserByEmailOrIdRepository {
     async loadUserByEmailOrId(value: string): Promise<IUserModel> {
-      return Promise.resolve({
-        id: 'any_id',
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'Any_password123',
-        role: UserRoles.employee
-      })
+      return Promise.resolve(makeFakeUserExists())
     }
   }
   return new LoadUserByEmailOrIdRepositoryStub()
@@ -32,41 +34,54 @@ const makeLoadUserByEmailOrIdRepository = (): ILoadUserByEmailOrIdRepository => 
 
 const makeUpdateUserRepositoryStub = (): IUpdateUserRepository => {
   class UpdateUserRepositoryStub implements IUpdateUserRepository {
-    async update(updateUserDto: UpdateUserDto): Promise<void> {
+    async update(updateUserData: UpdateUserData): Promise<void> {
       return new Promise(resolve => resolve())
     }
   }
   return new UpdateUserRepositoryStub()
 }
 
+const makeHasher = (): IHasher => {
+  class HasherStub implements IHasher {
+    async hash(value: string): Promise<string> {
+      return new Promise(resolve => resolve('hashed_password'))
+    }
+  }
+  return new HasherStub()
+}
+
 interface SutTypes {
   sut: DbUpdateUser
+  hasherStub: IHasher
   loadUserByEmailOrIdRepositoryStub: ILoadUserByEmailOrIdRepository
 }
 
 const makeSut = (): SutTypes => {
   const loadUserByEmailOrIdRepositoryStub = makeLoadUserByEmailOrIdRepository()
   const updateUserRepositoryStub = makeUpdateUserRepositoryStub()
+  const hasherStub = makeHasher()
   const sut = new DbUpdateUser(
     loadUserByEmailOrIdRepositoryStub,
+    hasherStub,
     updateUserRepositoryStub
   )
   return {
     sut,
-    loadUserByEmailOrIdRepositoryStub
+    loadUserByEmailOrIdRepositoryStub,
+    hasherStub
   }
 }
 
 describe('DbUpdateUser', () => {
-  test('Should call ILoadUserByEmailOrIdRepository with dto user id', async () => {
+  test('Should call ILoadUserByEmailOrIdRepository with data user id', async () => {
     const { sut, loadUserByEmailOrIdRepositoryStub } = makeSut()
     const loadUserSpy = jest.spyOn(
       loadUserByEmailOrIdRepositoryStub,
       'loadUserByEmailOrId'
     )
-    const updateUserDto = makeFakeUpdateUserDto()
-    await sut.update(updateUserDto)
-    expect(loadUserSpy).toHaveBeenCalledWith(updateUserDto.id)
+    const updateUserData = makeFakeUpdateUserData()
+    await sut.update(updateUserData)
+    expect(loadUserSpy).toHaveBeenCalledWith(updateUserData.id)
   })
 
   test('Should return fail if ILoadUserByEmailOrIdRepository returns fail', async () => {
@@ -75,7 +90,7 @@ describe('DbUpdateUser', () => {
       .spyOn(loadUserByEmailOrIdRepositoryStub, 'loadUserByEmailOrId')
       .mockReturnValueOnce(null)
 
-    const response = await sut.update(makeFakeUpdateUserDto())
+    const response = await sut.update(makeFakeUpdateUserData())
     expect(response).toEqual(Result.fail<IUserModel>('Invalid user id'))
   })
 
@@ -85,7 +100,7 @@ describe('DbUpdateUser', () => {
       .spyOn(loadUserByEmailOrIdRepositoryStub, 'loadUserByEmailOrId')
       .mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
 
-    const promise = sut.update(makeFakeUpdateUserDto())
+    const promise = sut.update(makeFakeUpdateUserData())
     await expect(promise).rejects.toThrow()
   })
 })

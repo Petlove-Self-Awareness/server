@@ -1,5 +1,5 @@
-import { UpdateUserDto } from '../../../../domain/usecases/user/update-user'
+import { UpdateUserData } from '../../../../domain/usecases/user/update-user'
 
 export interface IUpdateUserRepository {
-  update: (data: UpdateUserDto) => Promise<void>
+  update: (data: UpdateUserData) => Promise<void>
 }
