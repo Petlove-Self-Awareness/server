@@ -26,6 +26,6 @@ export class DbCreatePositionUseCase implements ICreatePositionUseCase {
       return Result.fail('Position already exists')
     }
     await this.createPositionRepo.create({ id, positionName: name })
-    return Result.ok({ id, positionName: name })
+    return Result.ok({ id, positionName: validPosition.getValue().name.value })
   }
 }
