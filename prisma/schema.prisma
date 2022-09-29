@@ -23,6 +23,11 @@ model position {
   name String @unique
 }
 
+model seniority {
+  id String @id
+  name String @unique
+}
+
 model history {
   id String @id @default(uuid())
   stack String
