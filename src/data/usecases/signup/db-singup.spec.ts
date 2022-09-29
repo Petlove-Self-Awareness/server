@@ -1,27 +1,27 @@
 import { Result } from '../../../domain/logic/result'
 import { DbSignUp } from './db-signup'
 import {
+  IDBuilder,
   IHasher,
   ILoadUserByEmailOrIdRepository,
   ISignupRepository,
   IUserModel,
   SignupData,
-  IDBuilder,
   UserRoles
 } from './db-signup-protocols'
 
 const makeFakeAccount = (): ILoadUserByEmailOrIdRepository.Result => ({
   id: 'valid_id',
   name: 'valid_name',
-  email: 'valid_email',
+  email: 'valid_email@mail.com',
   password: 'hashed_password',
   role: UserRoles.employee
 })
 
 const makeFakeAccountData = (): SignupData => ({
   name: 'valid_name',
-  email: 'valid_email',
-  password: 'valid_password',
+  email: 'valid_email@mail.com',
+  password: 'Valid_password@123',
   role: UserRoles.employee
 })
 
@@ -62,9 +62,11 @@ const makeLoadUserByEmailOrIdRepositoryStub =
       ): Promise<ILoadUserByEmailOrIdRepository.Result> {
         return new Promise(resolve => resolve(null))
       }
+
     }
-    return new LoadAccountByEmailRepositoryStub()
   }
+  return new LoadAccountByEmailRepositoryStub()
+}
 
 interface ISutTypes {
   sut: DbSignUp
@@ -77,8 +79,7 @@ interface ISutTypes {
 const makeSut = (): ISutTypes => {
   const hasherStub = makeHasher()
   const signupRepositoryStub = makeSignupRepositoryStub()
-  const loadUserByEmailOrIdRepositoryStub =
-    makeLoadUserByEmailOrIdRepositoryStub()
+  const loadUserByEmailOrIdRepositoryStub = makeLoadUserByEmailOrIdRepositoryStub()
   const idBuilderStub = makeIdBuilder()
   const sut = new DbSignUp(
     hasherStub,
@@ -100,16 +101,14 @@ describe('DbSignup Usecase', () => {
     const { sut, hasherStub } = makeSut()
     const hasherSpy = jest.spyOn(hasherStub, 'hash')
     await sut.signUp(makeFakeAccountData())
-    expect(hasherSpy).toHaveBeenCalledWith('valid_password')
+    expect(hasherSpy).toHaveBeenCalledWith('Valid_password@123')
   })
 
   test('Should throw if Hasher throws', async () => {
     const { sut, hasherStub } = makeSut()
     jest
       .spyOn(hasherStub, 'hash')
-      .mockReturnValueOnce(
-        new Promise((resolve, reject) => reject(new Error()))
-      )
+      .mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const promise = sut.signUp(makeFakeAccountData())
     await expect(promise).rejects.toThrow()
   })
@@ -121,16 +120,14 @@ describe('DbSignup Usecase', () => {
       'loadUserByEmailOrId'
     )
     await sut.signUp(makeFakeAccountData())
-    expect(loadUserSpy).toHaveBeenCalledWith('valid_email')
+    expect(loadUserSpy).toHaveBeenCalledWith('valid_email@mail.com')
   })
 
   test('Should throw if LoadUserByEmailOrIdRepository throws', async () => {
     const { sut, loadUserByEmailOrIdRepositoryStub } = makeSut()
     jest
       .spyOn(loadUserByEmailOrIdRepositoryStub, 'loadUserByEmailOrId')
-      .mockReturnValueOnce(
-        new Promise((resolve, reject) => reject(new Error()))
-      )
+      .mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const promise = sut.signUp(makeFakeAccountData())
     await expect(promise).rejects.toThrow()
   })
@@ -157,7 +154,7 @@ describe('DbSignup Usecase', () => {
     await sut.signUp(makeFakeAccountData())
     expect(addSpy).toHaveBeenCalledWith({
       name: 'valid_name',
-      email: 'valid_email',
+      email: 'valid_email@mail.com',
       password: 'hashed_password',
       id: 'valid_id',
       role: 'employee'
@@ -168,9 +165,7 @@ describe('DbSignup Usecase', () => {
     const { sut, signupRepositoryStub } = makeSut()
     jest
       .spyOn(signupRepositoryStub, 'signup')
-      .mockReturnValueOnce(
-        new Promise((resolve, reject) => reject(new Error()))
-      )
+      .mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const promise = sut.signUp(makeFakeAccountData())
     await expect(promise).rejects.toThrow()
   })
