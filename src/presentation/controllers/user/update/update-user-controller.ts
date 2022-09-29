@@ -7,7 +7,9 @@ import {
   InvalidParamError,
   MissingParamError,
   ok,
-  serverError
+  Result,
+  serverError,
+  unprocessableEntity
 } from '../login/login-controller-protocols'
 
 export class UpdateUserController implements IController {
@@ -30,6 +32,9 @@ export class UpdateUserController implements IController {
         id: httpRequest.userId
       })
       const updatedUser = await this.userUpdateUseCase.update(dataToUpdate)
+      if (updatedUser.isFailure) {
+        return unprocessableEntity(updatedUser.error)
+      }
       return ok(updatedUser.getValue())
     } catch (error) {
       return serverError(error)
