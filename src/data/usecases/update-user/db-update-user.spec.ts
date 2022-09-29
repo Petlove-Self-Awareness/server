@@ -1,7 +1,5 @@
-import {
-  IUpdateUserUseCase,
-  UpdateUserDto
-} from '../../../domain/usecases/user/update-user'
+import { UpdateUserDto } from '../../../domain/usecases/user/update-user'
+import { IUpdateUserRepository } from '../../protocols/db/user/update-user-repository'
 import { Result } from '../load-user-by-token/db-load-user-by-token-protocols'
 import {
   ILoadUserByEmailOrIdRepository,
@@ -12,9 +10,9 @@ import { DbUpdateUser } from './db-update-user'
 
 const makeFakeUpdateUserDto = (): UpdateUserDto => ({
   id: 'any_id',
-  name: 'valid_name',
-  email: 'valid_email',
-  password: 'valid_password'
+  name: 'any_name',
+  email: 'any_email@mail.com',
+  password: 'Any_password123@'
 })
 
 const makeLoadUserByEmailOrIdRepository = (): ILoadUserByEmailOrIdRepository => {
@@ -24,7 +22,7 @@ const makeLoadUserByEmailOrIdRepository = (): ILoadUserByEmailOrIdRepository => 
         id: 'any_id',
         name: 'any_name',
         email: 'any_email@mail.com',
-        password: 'any_password',
+        password: 'Any_password123',
         role: UserRoles.employee
       })
     }
@@ -32,14 +30,27 @@ const makeLoadUserByEmailOrIdRepository = (): ILoadUserByEmailOrIdRepository => 
   return new LoadUserByEmailOrIdRepositoryStub()
 }
 
+const makeUpdateUserRepositoryStub = (): IUpdateUserRepository => {
+  class UpdateUserRepositoryStub implements IUpdateUserRepository {
+    async update(updateUserDto: UpdateUserDto): Promise<void> {
+      return new Promise(resolve => resolve())
+    }
+  }
+  return new UpdateUserRepositoryStub()
+}
+
 interface SutTypes {
-  sut: IUpdateUserUseCase
+  sut: DbUpdateUser
   loadUserByEmailOrIdRepositoryStub: ILoadUserByEmailOrIdRepository
 }
 
 const makeSut = (): SutTypes => {
   const loadUserByEmailOrIdRepositoryStub = makeLoadUserByEmailOrIdRepository()
-  const sut = new DbUpdateUser(loadUserByEmailOrIdRepositoryStub)
+  const updateUserRepositoryStub = makeUpdateUserRepositoryStub()
+  const sut = new DbUpdateUser(
+    loadUserByEmailOrIdRepositoryStub,
+    updateUserRepositoryStub
+  )
   return {
     sut,
     loadUserByEmailOrIdRepositoryStub
@@ -76,9 +87,5 @@ describe('DbUpdateUser', () => {
 
     const promise = sut.update(makeFakeUpdateUserDto())
     await expect(promise).rejects.toThrow()
-  })
-
-  test('Must call addChange if it succeeds in creating a UserName', () => {
-    
   })
 })
