@@ -21,8 +21,8 @@ export class CreatePositionController implements IController {
   ) {}
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const { accountId, body } = httpRequest
-      const client = await this.loadUserById.load(accountId)
+      const { userId, body } = httpRequest
+      const client = await this.loadUserById.load(userId)
       if (client.getValue().role !== 'admin') {
         return forbidden(new UnauthorizedError())
       }
@@ -38,6 +38,7 @@ export class CreatePositionController implements IController {
       const position = positionOrError.getValue()
       return ok(position)
     } catch (error) {
+      console.error(error)
       return serverError(error)
     }
   }

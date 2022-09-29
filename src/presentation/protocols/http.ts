@@ -1,7 +1,8 @@
 export interface HttpRequest {
   body?: any
   headers?: any
-  accountId?: any
+  userId?: any
+  params?: any
 }
 
 export interface HttpResponse {

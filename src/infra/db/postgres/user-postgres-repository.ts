@@ -25,13 +25,9 @@ export class UserPostgresRepository
     let register: user
     const isUUID = this.idAdapter.isUUID(value)
     if (isUUID) {
-      register = await this.prisma.user.findUnique({
-        where: { id: value }
-      })
+      register = await this.prisma.user.findUnique({ where: { id: value } })
     } else {
-      register = await this.prisma.user.findUnique({
-        where: { email: value }
-      })
+      register = await this.prisma.user.findUnique({ where: { email: value } })
     }
     if (!register) {
       return null

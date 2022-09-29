@@ -20,7 +20,7 @@ const makeFakeRequest = (): HttpRequest => ({
   body: {
     positionName: 'any_name'
   },
-  accountId: 'any_account_id'
+  userId: 'any_account_id'
 })
 
 const makeFakePosition = (): Result<IPositionModel> => {
@@ -31,7 +31,7 @@ const makeFakePosition = (): Result<IPositionModel> => {
 }
 
 const makeFakeUser = (): IUserModel => ({
-  id: 'any_id',
+  id: 'any_account_id',
   name: 'any_name',
   email: 'any_email@mail.com',
   password: 'any_password',
@@ -100,7 +100,7 @@ describe('CreatePositionController', () => {
     expect(useCaseSpy).toHaveBeenCalledWith('any_name')
   })
 
-  test('Should return 500 if an SignUpUseCase throws', async () => {
+  test('Should return 500 if an CreatePositionUseCase throws', async () => {
     const { sut, createPositionUseCaseStub } = makeSut()
     jest
       .spyOn(createPositionUseCaseStub, 'create')
