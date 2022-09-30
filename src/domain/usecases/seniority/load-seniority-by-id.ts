@@ -2,7 +2,7 @@ import { Result } from '../../logic/result'
 import { ISeniorityModel } from '../../models/seniority'
 
 export interface ILoadSeniorityByIdUseCase {
-  loadById: (id: string) => ILoadSeniorityByIdUseCase.result
+  loadById: (id: string) => Promise<ILoadSeniorityByIdUseCase.result>
 }
 
 export namespace ILoadSeniorityByIdUseCase {
