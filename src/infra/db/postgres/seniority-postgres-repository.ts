@@ -1,4 +1,5 @@
 import { PrismaClient, seniority } from '@prisma/client'
+import { IDeletePositionRepository } from '../../../data/protocols/db/position/delete-position'
 import { ILoadSenioritiesRepository } from '../../../data/protocols/db/seniority/load-seniorities-repository'
 import { ILoadSeniorityByIdRepository } from '../../../data/protocols/db/seniority/load-seniority-by-id-repository'
 import {
@@ -12,7 +13,8 @@ export class SeniorityPostgresRepository
     ICreateSeniorityRepository,
     ILoadSeniorityByNameRepository,
     ILoadSenioritiesRepository,
-    ILoadSeniorityByIdRepository
+    ILoadSeniorityByIdRepository,
+    IDeletePositionRepository
 {
   constructor(private readonly prisma: PrismaClient) {}
   async loadByName(name: string): Promise<ILoadSeniorityByNameRepository.Result> {
@@ -47,5 +49,11 @@ export class SeniorityPostgresRepository
       return null
     }
     return { id: register.id, seniorityName: register.name }
+  }
+
+  async delete(id: string): Promise<IDeletePositionRepository.Result> {
+    const result = await this.loadById(id)
+    if (!result) return null
+    await this.prisma.seniority.delete({ where: { id } })
   }
 }
