@@ -3,7 +3,7 @@ import {
   ICreateSeniorityRepository,
   ILoadSeniorityByNameRepository,
   ISeniorityModel
-} from '../../../data/usecases/seniority/db-create-seniority-protocols'
+} from '../../../data/usecases/seniority/create-seniority/db-create-seniority-protocols'
 
 export class SeniorityPostgresRepository
   implements ICreateSeniorityRepository, ILoadSeniorityByNameRepository

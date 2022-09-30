@@ -1,4 +1,4 @@
-import { DbCreateSeniorityUseCase } from '../../../../data/usecases/seniority/db-create-seniority'
+import { DbCreateSeniorityUseCase } from '../../../../data/usecases/seniority/create-seniority/db-create-seniority'
 import { ICreateSeniorityUseCase } from '../../../../domain/usecases/seniority/create-seniority'
 import { UUIDAdapter } from '../../../../infra/criptography/uuid/uuid-adapter'
 import { PrismaHelper } from '../../../../infra/db/helpers/prisma-helper'

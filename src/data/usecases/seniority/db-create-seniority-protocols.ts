@@ -1,6 +1,0 @@
-export * from '../../protocols/db/seniority/create-seniority-repository'
-export * from '../../protocols/db/seniority/load-seniority-by-name-repository'
-export * from '../../../domain/usecases/seniority/create-seniority'
-export * from '../../../domain/logic/result'
-export * from '../../../domain/models/seniority'
-export * from '../../protocols/criptography/id-builder'
