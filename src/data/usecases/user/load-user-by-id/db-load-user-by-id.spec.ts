@@ -1,4 +1,4 @@
-import { DbLoadUserByEmail } from './db-load-user-by-id'
+import { DbLoadUserByUniqueKey } from './db-load-user-by-id'
 import {
   ILoadUserByEmailOrIdRepository,
   Result,
@@ -28,22 +28,19 @@ const makeLoadUserByIdRepoStub = (): ILoadUserByEmailOrIdRepository => {
 
 type SutTypes = {
   loadUserByIdRepositoryStub: ILoadUserByEmailOrIdRepository
-  sut: DbLoadUserByEmail
+  sut: DbLoadUserByUniqueKey
 }
 
 const makeSut = (): SutTypes => {
   const loadUserByIdRepositoryStub = makeLoadUserByIdRepoStub()
-  const sut = new DbLoadUserByEmail(loadUserByIdRepositoryStub)
+  const sut = new DbLoadUserByUniqueKey(loadUserByIdRepositoryStub)
   return { sut, loadUserByIdRepositoryStub }
 }
 
 describe('DbLoadUserByEmail', () => {
   test('Should call LoadUserByIdRepository with correct values', async () => {
     const { loadUserByIdRepositoryStub, sut } = makeSut()
-    const loadSpy = jest.spyOn(
-      loadUserByIdRepositoryStub,
-      'loadUserByEmailOrId'
-    )
+    const loadSpy = jest.spyOn(loadUserByIdRepositoryStub, 'loadUserByEmailOrId')
     await sut.load(makeFakeId())
     expect(loadSpy).toHaveBeenCalledWith('valid_id')
   })

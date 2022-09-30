@@ -2,7 +2,7 @@ import { CreatePositionController } from '../../../../../presentation/controller
 import { IController } from '../../../../../presentation/protocols'
 import { makeLogControllerDecorator } from '../../../decorators/log-error-controller-decorator-factory'
 import { makeDbCreatePosition } from '../../../usecases/position/create-position-usecase-factory'
-import { makeDbLoadUserByEmail } from '../../../usecases/user/load-user-by-email-usecase-factory'
+import { makeDbLoadUserByUniqueKey } from '../../../usecases/user/load-user-by-email-usecase-factory'
 import { makeCreatePositionValidation } from './create-position-validation-factory'
 
 export const makeCreatePositionController = (): IController => {
@@ -10,7 +10,7 @@ export const makeCreatePositionController = (): IController => {
     new CreatePositionController(
       makeCreatePositionValidation(),
       makeDbCreatePosition(),
-      makeDbLoadUserByEmail()
+      makeDbLoadUserByUniqueKey()
     )
   )
 }

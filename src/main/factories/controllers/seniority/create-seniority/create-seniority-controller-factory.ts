@@ -2,7 +2,7 @@ import { CreateSeniorityController } from '../../../../../presentation/controlle
 import { IController } from '../../../../../presentation/protocols'
 import { makeLogControllerDecorator } from '../../../decorators/log-error-controller-decorator-factory'
 import { makeDbCreateSeniorityUseCase } from '../../../usecases/seniority/create-seniority-usecase-factory'
-import { makeDbLoadUserByEmail } from '../../../usecases/user/load-user-by-email-usecase-factory'
+import { makeDbLoadUserByUniqueKey } from '../../../usecases/user/load-user-by-email-usecase-factory'
 import { makeCreateSeniorityValidation } from './create-seniority-validation-factory'
 
 export const makeCreateSeniorityController = (): IController => {
@@ -10,7 +10,7 @@ export const makeCreateSeniorityController = (): IController => {
     new CreateSeniorityController(
       makeCreateSeniorityValidation(),
       makeDbCreateSeniorityUseCase(),
-      makeDbLoadUserByEmail()
+      makeDbLoadUserByUniqueKey()
     )
   )
 }
