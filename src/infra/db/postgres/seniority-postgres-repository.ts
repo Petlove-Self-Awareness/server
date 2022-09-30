@@ -1,5 +1,6 @@
 import { PrismaClient, seniority } from '@prisma/client'
 import { ILoadSenioritiesRepository } from '../../../data/protocols/db/seniority/load-seniorities-repository'
+import { ILoadSeniorityByIdRepository } from '../../../data/protocols/db/seniority/load-seniority-by-id-repository'
 import {
   ICreateSeniorityRepository,
   ILoadSeniorityByNameRepository,
@@ -10,7 +11,8 @@ export class SeniorityPostgresRepository
   implements
     ICreateSeniorityRepository,
     ILoadSeniorityByNameRepository,
-    ILoadSenioritiesRepository
+    ILoadSenioritiesRepository,
+    ILoadSeniorityByIdRepository
 {
   constructor(private readonly prisma: PrismaClient) {}
   async loadByName(name: string): Promise<ILoadSeniorityByNameRepository.Result> {
@@ -36,5 +38,14 @@ export class SeniorityPostgresRepository
       id: seniority.id,
       seniorityName: seniority.name
     }))
+  }
+
+  async loadById(id: string): Promise<ILoadSeniorityByIdRepository.Result> {
+    let register: seniority
+    register = await this.prisma.seniority.findUnique({ where: { id } })
+    if (!register) {
+      return null
+    }
+    return { id: register.id, seniorityName: register.name }
   }
 }
