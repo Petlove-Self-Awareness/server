@@ -1,5 +1,5 @@
 export * from '../../../protocols/criptography'
-export * from '../../../../domain/usecases/login'
+export * from '../../../../domain/usecases/user/login'
 export * from '../../../protocols/db/user/find-user-repository'
 export * from '../../../../domain/logic/result'
 export * from '../../../../domain/models/user-model'

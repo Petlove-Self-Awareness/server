@@ -1,5 +1,5 @@
 export * from '../../../protocols'
 export * from '../../../helpers/http-helpers'
 export * from '../../../../domain/logic/result'
-export * from '../../../../domain/usecases/login'
+export * from '../../../../domain/usecases/user/login'
 export * from '../../../errors'

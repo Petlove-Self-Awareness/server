@@ -1,5 +1,5 @@
 import { DbLoadUserByToken } from '../../../../data/usecases/user/load-user-by-token/db-load-user-by-token'
-import { ILoadUserByToken } from '../../../../domain/usecases/load-user-by-token'
+import { ILoadUserByToken } from '../../../../domain/usecases/user/load-user-by-token'
 import { JwtAdapter } from '../../../../infra/criptography/jwt/jwt-adapter'
 import { UUIDAdapter } from '../../../../infra/criptography/uuid/uuid-adapter'
 import { PrismaHelper } from '../../../../infra/db/helpers/prisma-helper'

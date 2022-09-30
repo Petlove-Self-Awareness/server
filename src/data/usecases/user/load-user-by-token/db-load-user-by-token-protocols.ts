@@ -1,4 +1,4 @@
-export * from '../../../../domain/usecases/load-user-by-token'
+export * from '../../../../domain/usecases/user/load-user-by-token'
 export * from '../../../../domain/models/user-model'
 export * from '../../../../domain/logic/result'
 export * from '../../../protocols/criptography/decrypter'

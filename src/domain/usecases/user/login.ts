@@ -1,4 +1,4 @@
-import { Result } from '../logic/result'
+import { Result } from '../../logic/result'
 
 export type AuthenticationModel = {
   email: string

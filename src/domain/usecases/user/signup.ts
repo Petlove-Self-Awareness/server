@@ -1,5 +1,5 @@
-import { Result } from '../logic/result'
-import { IUserModel, UserRoles } from '../models/user-model'
+import { Result } from '../../logic/result'
+import { IUserModel, UserRoles } from '../../models/user-model'
 
 export interface SignupData {
   name: string

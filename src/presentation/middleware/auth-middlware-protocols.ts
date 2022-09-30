@@ -1,5 +1,5 @@
 export * from '../protocols'
 export * from '../protocols/middleware'
 export * from './../helpers/http-helpers'
-export * from '../../domain/usecases/load-user-by-token'
+export * from '../../domain/usecases/user/load-user-by-token'
 export * from '../../domain/models/user-model'

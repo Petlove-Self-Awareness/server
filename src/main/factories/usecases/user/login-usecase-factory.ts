@@ -1,5 +1,5 @@
 import { DbAuthentication } from '../../../../data/usecases/user/login/db-login'
-import { ILogin } from '../../../../domain/usecases/login'
+import { ILogin } from '../../../../domain/usecases/user/login'
 import { BcryptAdapter } from '../../../../infra/criptography/bcrypt/bcrypt-adapter'
 import { JwtAdapter } from '../../../../infra/criptography/jwt/jwt-adapter'
 import { UUIDAdapter } from '../../../../infra/criptography/uuid/uuid-adapter'

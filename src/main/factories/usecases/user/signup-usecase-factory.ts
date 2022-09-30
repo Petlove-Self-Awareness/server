@@ -1,5 +1,5 @@
 import { DbSignUp } from '../../../../data/usecases/user/signup/db-signup'
-import { ISingupUseCase } from '../../../../domain/usecases/signup'
+import { ISingupUseCase } from '../../../../domain/usecases/user/signup'
 import { BcryptAdapter } from '../../../../infra/criptography/bcrypt/bcrypt-adapter'
 import { UUIDAdapter } from '../../../../infra/criptography/uuid/uuid-adapter'
 import { PrismaHelper } from '../../../../infra/db/helpers/prisma-helper'

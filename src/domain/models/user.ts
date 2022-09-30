@@ -1,5 +1,5 @@
 import { Result } from '../logic/result'
-import { SignupData } from '../usecases/signup'
+import { SignupData } from '../usecases/user/signup'
 import { UserEmail } from '../value-objects/user-email'
 import { UserName } from '../value-objects/user-name'
 import { UserPassword } from '../value-objects/user-password'
