@@ -1,0 +1,6 @@
+export * from '../../../../domain/usecases/seniority/load-seniority-by-id'
+export * from '../../../protocols'
+export * from '../../../helpers/http-helpers'
+export * from '../../../errors'
+export * from '../../../../domain/logic/result'
+export * from '../../../../domain/models/seniority'
