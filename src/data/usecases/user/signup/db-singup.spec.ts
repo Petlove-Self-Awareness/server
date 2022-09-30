@@ -1,4 +1,4 @@
-import { Result } from '../../../domain/logic/result'
+import { Result } from '../../../../domain/logic/result'
 import { DbSignUp } from './db-signup'
 import {
   IDBuilder,

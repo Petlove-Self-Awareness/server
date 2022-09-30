@@ -1,11 +1,11 @@
 import {
   IUpdateUserUseCase,
   UpdateUserData
-} from '../../../domain/usecases/user/update-user'
-import { UserEmail } from '../../../domain/value-objects/user-email'
-import { UserName } from '../../../domain/value-objects/user-name'
-import { UserPassword } from '../../../domain/value-objects/user-password'
-import { IUpdateUserRepository } from '../../protocols/db/user/update-user-repository'
+} from '../../../../domain/usecases/user/update-user'
+import { UserEmail } from '../../../../domain/value-objects/user-email'
+import { UserName } from '../../../../domain/value-objects/user-name'
+import { UserPassword } from '../../../../domain/value-objects/user-password'
+import { IUpdateUserRepository } from '../../../protocols/db/user/update-user-repository'
 import { Result } from '../load-user-by-token/db-load-user-by-token-protocols'
 import {
   IHasher,

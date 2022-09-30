@@ -1,5 +1,5 @@
-import { Result } from '../../../domain/logic/result'
-import { User } from '../../../domain/models/user'
+import { Result } from '../../../../domain/logic/result'
+import { User } from '../../../../domain/models/user'
 import {
   IDBuilder,
   IHasher,

@@ -1,5 +1,5 @@
-import { UpdateUserData } from '../../../domain/usecases/user/update-user'
-import { IUpdateUserRepository } from '../../protocols/db/user/update-user-repository'
+import { UpdateUserData } from '../../../../domain/usecases/user/update-user'
+import { IUpdateUserRepository } from '../../../protocols/db/user/update-user-repository'
 import { Result } from '../load-user-by-token/db-load-user-by-token-protocols'
 import {
   IHasher,

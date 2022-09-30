@@ -1,4 +1,4 @@
-import { IUserModel } from '../../../usecases/signup/db-signup-protocols'
+import { IUserModel } from '../../../../domain/models/user-model'
 
 export interface ILoadUserByEmailOrIdRepository {
   loadUserByEmailOrId: (
