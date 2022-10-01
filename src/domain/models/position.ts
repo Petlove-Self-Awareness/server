@@ -14,6 +14,10 @@ export class Position {
     return this.positionName
   }
 
+  set updateName(name: PositionName) {
+    this.positionName = name
+  }
+
   get positionId(): string {
     return this.id
   }
@@ -30,6 +34,10 @@ export class Position {
     }
     const position = new Position({ positionName: nameOrError.getValue(), id })
     return Result.ok(position)
+  }
+
+  public convertToModel(): IPositionModel {
+    return { id: this.id, positionName: this.positionName.value }
   }
 }
 

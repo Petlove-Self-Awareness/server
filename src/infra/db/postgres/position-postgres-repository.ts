@@ -4,6 +4,7 @@ import { IDeletePositionRepository } from '../../../data/protocols/db/position/d
 import { ILoadPositionByIdRepository } from '../../../data/protocols/db/position/load-position-by-id'
 import { ILoadPositionByNameRepository } from '../../../data/protocols/db/position/load-position-by-name'
 import { ILoadPositionsRepository } from '../../../data/protocols/db/position/load-positions'
+import { ISavePositionRepository } from '../../../data/protocols/db/position/save-position'
 import { IPositionModel } from '../../../domain/models/position'
 
 export class PositionPostgresRepository
@@ -12,7 +13,8 @@ export class PositionPostgresRepository
     ILoadPositionByNameRepository,
     ILoadPositionByIdRepository,
     ILoadPositionsRepository,
-    IDeletePositionRepository
+    IDeletePositionRepository,
+    ISavePositionRepository
 {
   constructor(private readonly prisma: PrismaClient) {}
   async create(positionData: IPositionModel): Promise<void> {
@@ -24,9 +26,7 @@ export class PositionPostgresRepository
     })
   }
 
-  async loadByName(
-    name: string
-  ): Promise<ILoadPositionByNameRepository.Result> {
+  async loadByName(name: string): Promise<ILoadPositionByNameRepository.Result> {
     let register: position
     register = await this.prisma.position.findUnique({
       where: { name }
@@ -64,5 +64,16 @@ export class PositionPostgresRepository
       return null
     }
     await this.prisma.position.delete({ where: { id } })
+  }
+
+  async save(
+    data: ISavePositionRepository.Params
+  ): Promise<ISavePositionRepository.Result> {
+    const register = await this.loadById(data.id)
+    if (register) return null
+    await this.prisma.position.update({
+      where: { id: data.id },
+      data: { name: data.positionName }
+    })
   }
 }
