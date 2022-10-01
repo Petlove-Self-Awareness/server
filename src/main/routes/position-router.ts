@@ -5,6 +5,7 @@ import { makeCreatePositionController } from '../factories/controllers/position/
 import { makeDeletePositionController } from '../factories/controllers/position/delete-position/delete-position-controller-factory'
 import { makeLoadPositionByIdController } from '../factories/controllers/position/load-position-by-id/load-position-by-id-controller-factory'
 import { makeLoadPositionsController } from '../factories/controllers/position/load-positions/load-positions-controller-factory'
+import { makeUpdatePositionController } from '../factories/controllers/position/update-position/update-position-controller-factory'
 import { makeAuthMiddleware } from '../factories/middlewares/auth-middlware-factory'
 
 export const positionRouter = Router()
@@ -31,4 +32,10 @@ positionRouter.delete(
   '/:positionId',
   adaptMiddleware(makeAuthMiddleware()),
   adaptRoute(makeDeletePositionController())
+)
+
+positionRouter.patch(
+  '/:positionId',
+  adaptMiddleware(makeAuthMiddleware()),
+  adaptRoute(makeUpdatePositionController())
 )
