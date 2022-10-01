@@ -70,7 +70,7 @@ export class PositionPostgresRepository
     data: ISavePositionRepository.Params
   ): Promise<ISavePositionRepository.Result> {
     const register = await this.loadById(data.id)
-    if (register) return null
+    if (!register) return null
     await this.prisma.position.update({
       where: { id: data.id },
       data: { name: data.positionName }

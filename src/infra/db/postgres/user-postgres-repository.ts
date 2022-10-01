@@ -37,7 +37,7 @@ export class UserPostgresRepository
 
   async update(data: UpdateUserData): Promise<void> {
     const register = await this.loadUserByEmailOrId(data.id)
-    if (register) return null
+    if (!register) return null
     const dataToUpdate = Object.assign({}, data)
     delete dataToUpdate.id
     await this.prisma.user.update({ where: { id: data.id }, data: dataToUpdate })

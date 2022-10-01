@@ -6,6 +6,6 @@ export interface IUpdatePositionUseCase {
 }
 
 export namespace IUpdatePositionUseCase {
-  export type params = Omit<IPositionModel, 'id'>
+  export type params = IPositionModel
   export type result = Result<IPositionModel>
 }
